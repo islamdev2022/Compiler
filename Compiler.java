@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 
@@ -16,23 +18,8 @@ public class Compiler {
 static Syntactic us;
 private static javax.swing.JFrame analysisFrame;
 private static javax.swing.JTable at;
-private static void setup_anaframe(){
-        analysisFrame.setVisible(true);
-        
-        Object[] result = new Object[us.terminals.size()+1];
-        result[0] = "";
-        System.arraycopy(us.terminals.toArray(), 0, result, 1, us.terminals.size());
-        Object[] columnNames = result;
-        
-        String[][] anat = new String[us.RS.size()][us.terminals.size()+1];
-        for(int i=0;i<anat.length;i++){
-            anat[i][0] = us.LS.get(i);
-            System.arraycopy(us.analysis_table[i], 0, anat[i], 1, us.analysis_table[i].length);
-        }
-        DefaultTableModel model = new DefaultTableModel(anat, columnNames);
-        at.setModel(model);
-    }
-
+static Stack stack = new Stack();
+static ArrayList<Lexical> ul;
     
 
      public static void main(String[] args) {
@@ -254,26 +241,11 @@ private static void setup_anaframe(){
         firstFollowFrame.getContentPane().add(analyzeBtnTable,BorderLayout.SOUTH);
         
 
-        JTable at= new JTable();
+        at = new javax.swing.JTable();
         JScrollPane jScrollPane5 = new JScrollPane();
-        
-        at.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        at.setEnabled(false);
-        at.setMinimumSize(new java.awt.Dimension(300, 72));
-        jScrollPane5.setViewportView(at);
-
        
-JFrame analysisFrame = new JFrame();
+       
+        analysisFrame = new javax.swing.JFrame("Analysis table");
 javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFrame.getContentPane());
        analysisFrame.getContentPane().setLayout(anaframeLayout);
         anaframeLayout.setHorizontalGroup(
@@ -284,6 +256,8 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
             anaframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
+        analysisFrame.setSize(600, 200);
+        
 
 //END
         testGrammar.addActionListener(new ActionListener() {
@@ -324,6 +298,7 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
                     
                     JOptionPane.showMessageDialog(frame,"grammar correct","success", JOptionPane.INFORMATION_MESSAGE);
                     FirstAndFollow.setEnabled(true);
+
                     FirstAndFollow.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {       
@@ -353,7 +328,7 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
         analyzeBtnTable.addActionListener(new ActionListener() {
              @Override
             public void actionPerformed(ActionEvent e) { 
-                at.setEnabled(true);
+               
                 setup_anaframe();
             }
         });
@@ -389,9 +364,69 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
     
 // Display the window
     frame.setVisible(true);
+   
     }
-            static Stack stack = new Stack();
-static ArrayList<Lexical> ul;
+            
+private static void setup_anaframe() {
+    
+    // Check if the necessary data is available and properly initialized
+    if (us.terminals == null || us.RS == null || us.LS == null || us.analysis_table == null) {
+        System.out.println("terminals or something else is null");
+        return;
+    } 
+
+    // Prepare column names for the table model
+    Object[] result = new Object[us.terminals.size() + 1];
+    result[0] = "";
+    if (us.terminals.size() > 0) {
+        
+        System.arraycopy(us.terminals.toArray(), 0, result, 1, us.terminals.size());
+        System.out.println(Arrays.toString(result));
+    }
+    Object[] columnNames = result;
+
+    // Prepare data for the table model
+    String[][] anat = new String[us.RS.size()][us.terminals.size() + 1];
+    for (int i = 0; i < us.LS.size(); i++) {
+        anat[i][0] = us.LS.get(i).toString();
+
+        for (int j = 0; j < us.terminals.size(); j++) {
+            if (us.analysis_table[i] != null && j < us.analysis_table[i].length && us.analysis_table[i][j] != null) {
+                anat[i][j + 1] = us.analysis_table[i][j];
+            } else {
+                anat[i][j + 1] = "-"; // Replace null with "-" or "" as needed
+            }
+        }
+
+        
+    }
+            // After populating analysis_table
+for (int k = 0; k < us.analysis_table.length; k++) {
+    System.out.println("analysis_table[" + k + "]: " + Arrays.toString(anat[k]));
+}
+for (Object terminal : us.terminals.toArray()) {
+    System.out.println("Terminal: " + terminal);
+}
+for (Object nonTerminal : us.LS.toArray()) {
+    System.out.println("Non-Terminal: " + nonTerminal);
+}
+for (String[] row : anat) {
+    System.out.println("Table row: " + Arrays.toString(row));
+}
+
+
+    // Create and set the table model
+    DefaultTableModel model = new DefaultTableModel(anat, columnNames);
+    
+    at.setModel(model);
+    
+     JScrollPane jScrollPane5 = new JScrollPane();
+    // Configure and display the analysis frame
+    analysisFrame.getContentPane().add(jScrollPane5);
+    analysisFrame.pack(); // Adjusts size to fit contents
+    analysisFrame.setLocationRelativeTo(null); // Center on screen
+    analysisFrame.setVisible(true);
+}
 
 static boolean isSyntaxicallyCorrect(ArrayList<Lexical> ul){
         String at_result;

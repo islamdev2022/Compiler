@@ -57,6 +57,7 @@ public class Syntactic {
     }
     private static final int SOME_MAX_DEPTH = 20;
     private Set<String> alreadyProcessed = new HashSet<>();
+    public Object analysisTable;
     private boolean FIRST(String r, int index, int depth) {
         // Termination condition to avoid infinite recursion
         if (depth > SOME_MAX_DEPTH || alreadyProcessed.contains(r)) {

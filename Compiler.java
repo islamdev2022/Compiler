@@ -16,8 +16,7 @@ import java.util.Stack;
 
 public class Compiler {
 static Syntactic us;
-private static javax.swing.JFrame analysisFrame;
-private static javax.swing.JTable at;
+
 static Stack stack = new Stack();
 static ArrayList<Lexical> ul;
     
@@ -180,7 +179,7 @@ static ArrayList<Lexical> ul;
 
 // the first and follow table : 
         JFrame firstFollowFrame = new JFrame("First and Follow table");
-        firstFollowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       
         firstFollowFrame.setSize(500, 350);
         firstFollowFrame.setLocationRelativeTo(null);
         JList<String> nts = new JList<>();
@@ -236,29 +235,8 @@ static ArrayList<Lexical> ul;
         names.add(LabelFOLLOW);
         firstFollowFrame.add(names);
         // the analysis table button
-
         JButton analyzeBtnTable = new JButton("Predictive Table");
         firstFollowFrame.getContentPane().add(analyzeBtnTable,BorderLayout.SOUTH);
-        
-
-        at = new javax.swing.JTable();
-        JScrollPane jScrollPane5 = new JScrollPane();
-       
-       
-        analysisFrame = new javax.swing.JFrame("Analysis table");
-javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFrame.getContentPane());
-       analysisFrame.getContentPane().setLayout(anaframeLayout);
-        anaframeLayout.setHorizontalGroup(
-            anaframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-        );
-        anaframeLayout.setVerticalGroup(
-            anaframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-        );
-        analysisFrame.setSize(600, 200);
-        
-
 //END
         testGrammar.addActionListener(new ActionListener() {
             @Override
@@ -273,7 +251,10 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
         } else {
             switch((us = new Syntactic()).setup(text)){
                 case 1:
-                    
+                    JOptionPane.showMessageDialog(frame,"grammar correct","success", JOptionPane.INFORMATION_MESSAGE);
+                    FirstAndFollow.setEnabled(true);
+
+
                     DefaultListModel<String> nts_model = new DefaultListModel<>();
                     for(String l:us.LS){
                         nts_model.addElement(l);
@@ -295,18 +276,14 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
                         follow_model.addElement(_tmp.substring(0, _tmp.length()-3));
                     }
                     
-                    
-                    JOptionPane.showMessageDialog(frame,"grammar correct","success", JOptionPane.INFORMATION_MESSAGE);
-                    FirstAndFollow.setEnabled(true);
-
                     FirstAndFollow.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {       
-                                nts.setModel(nts_model);
-                    first.setModel(first_model);
-                    follow.setModel(follow_model);
-                    firstFollowFrame.setVisible(true);
-                    
+                            nts.setModel(nts_model);
+                            first.setModel(first_model);
+                            follow.setModel(follow_model);
+                            firstFollowFrame.setVisible(true);
+                            
                         }
                         });
                     submitButton2.setEnabled(true); // Enable the analyze button
@@ -328,7 +305,6 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
         analyzeBtnTable.addActionListener(new ActionListener() {
              @Override
             public void actionPerformed(ActionEvent e) { 
-               
                 setup_anaframe();
             }
         });
@@ -343,7 +319,8 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
                 stack.push(us.LS.get(0));
                 
                 if(text.length()==0){
-                    return;
+                       JOptionPane.showMessageDialog(frame, "Please enter text or choose a file for analysis.", 
+                                          "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 
                  Lexical lexicalAnalyzer = new Lexical(text,true);
@@ -367,66 +344,69 @@ javax.swing.GroupLayout anaframeLayout = new javax.swing.GroupLayout(analysisFra
    
     }
             
-private static void setup_anaframe() {
+    private static void setup_anaframe() {
+        // Check if the necessary data is available and properly initialized
+        if (us.terminals == null || us.RS == null || us.LS == null || us.analysis_table == null) {
+            System.out.println("terminals or something else is null");
+            return;
+        }
     
-    // Check if the necessary data is available and properly initialized
-    if (us.terminals == null || us.RS == null || us.LS == null || us.analysis_table == null) {
-        System.out.println("terminals or something else is null");
-        return;
-    } 
-
-    // Prepare column names for the table model
-    Object[] result = new Object[us.terminals.size() + 1];
-    result[0] = "";
-    if (us.terminals.size() > 0) {
-        
-        System.arraycopy(us.terminals.toArray(), 0, result, 1, us.terminals.size());
-        System.out.println(Arrays.toString(result));
-    }
-    Object[] columnNames = result;
-
-    // Prepare data for the table model
-    String[][] anat = new String[us.RS.size()][us.terminals.size() + 1];
-    for (int i = 0; i < us.LS.size(); i++) {
-        anat[i][0] = us.LS.get(i).toString();
-
-        for (int j = 0; j < us.terminals.size(); j++) {
-            if (us.analysis_table[i] != null && j < us.analysis_table[i].length && us.analysis_table[i][j] != null) {
-                anat[i][j + 1] = us.analysis_table[i][j];
-            } else {
-                anat[i][j + 1] = "-"; // Replace null with "-" or "" as needed
+        // Prepare column names for the table model
+        Object[] result = new Object[us.terminals.size() + 1];
+        result[0] = "";
+        if (us.terminals.size() > 0) {
+            System.arraycopy(us.terminals.toArray(), 0, result, 1, us.terminals.size());
+            System.out.println(Arrays.toString(result));
+        }
+        Object[] columnNames = result;
+    
+        // Prepare data for the table model
+        String[][] anat = new String[us.RS.size()][us.terminals.size() + 1];
+        for (int i = 0; i < us.LS.size(); i++) {
+            anat[i][0] = us.LS.get(i).toString();
+    
+            for (int j = 0; j < us.terminals.size(); j++) {
+                if (us.analysis_table[i] != null && j < us.analysis_table[i].length && us.analysis_table[i][j] != null) {
+                    anat[i][j + 1] = us.analysis_table[i][j];
+                } else {
+                    anat[i][j + 1] = "-"; // Replace null with "-" 
+                }
             }
         }
+    
+        // Debugging output
+        for (int k = 0; k < us.analysis_table.length; k++) {
+            System.out.println("analysis_table[" + k + "]: " + Arrays.toString(anat[k]));
+        }
+    
+        // Create and set the table model
+        DefaultTableModel model = new DefaultTableModel(anat, columnNames);
 
-        
+        // Debugging: Print out the contents of the table model
+for (int i = 0; i < model.getRowCount(); i++) {
+    for (int j = 0; j < model.getColumnCount(); j++) {
+        System.out.print(model.getValueAt(i, j) + "\t");
     }
-            // After populating analysis_table
-for (int k = 0; k < us.analysis_table.length; k++) {
-    System.out.println("analysis_table[" + k + "]: " + Arrays.toString(anat[k]));
+    System.out.println(); // New line at the end of a row
 }
-for (Object terminal : us.terminals.toArray()) {
-    System.out.println("Terminal: " + terminal);
-}
-for (Object nonTerminal : us.LS.toArray()) {
-    System.out.println("Non-Terminal: " + nonTerminal);
-}
-for (String[] row : anat) {
-    System.out.println("Table row: " + Arrays.toString(row));
-}
-
-
-    // Create and set the table model
-    DefaultTableModel model = new DefaultTableModel(anat, columnNames);
+JFrame analysisFrame=new JFrame("ana table"); 
+              
+        // Assuming 'at' is your JTable
+        JTable at = new JTable(model);
     
-    at.setModel(model);
+        // Add the table to a JScrollPane
+        JScrollPane jScrollPane = new JScrollPane(at);
     
-     JScrollPane jScrollPane5 = new JScrollPane();
-    // Configure and display the analysis frame
-    analysisFrame.getContentPane().add(jScrollPane5);
-    analysisFrame.pack(); // Adjusts size to fit contents
-    analysisFrame.setLocationRelativeTo(null); // Center on screen
-    analysisFrame.setVisible(true);
-}
+        // Add the JScrollPane to the frame's content pane
+        analysisFrame.getContentPane().add(jScrollPane);
+        // Configure and display the analysis frame
+        analysisFrame.pack(); // Adjusts size to fit contents
+        analysisFrame.setLocationRelativeTo(null); // Center on screen
+        
+        analysisFrame.setVisible(true);
+
+    }
+    
 
 static boolean isSyntaxicallyCorrect(ArrayList<Lexical> ul){
         String at_result;
@@ -443,14 +423,16 @@ static boolean isSyntaxicallyCorrect(ArrayList<Lexical> ul){
                 int j;
                 if((j = us.NTindex(top_stack))==-1)return false;
                 
-                if((at_result = us.analysis_table[j][i]) == null) return false;
-                else if(at_result.equals("~")){
+                if(us.analysis_table[j][i] == null) {   
+                   System.out.println("erreur "); 
+                   }
+                else if(us.analysis_table[j][i].equals("~")){
                     if(stack.empty()) return false;
                     continue;
                 }
 
-                for (int k = at_result.split("\\.").length-1; k >= 0; k--) {
-                    stack.push(at_result.split("\\.")[k]);
+                for (int k = us.analysis_table[j][i].split("\\.").length-1; k >= 0; k--) {
+                    stack.push(us.analysis_table[j][i].split("\\.")[k]);
                 }
             }
         }

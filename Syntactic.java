@@ -20,7 +20,7 @@ public class Syntactic {
     
     public int setup(String fileContent){
         String[] G;
-        if((G = readFile(fileContent)) == null)return -1;
+        if((G = readFile(fileContent)) == null)return -1; //Error Grammar incorrect", "File Error!!
         
         for(int i=1;i<G.length;i++){
             String[] lrSides = G[i].split("->");
@@ -39,7 +39,7 @@ public class Syntactic {
             if(!FIRST(LS.get(i), i,0))first[i].add("~");
         }
         
-        if(first.length == 0)return -2;
+        if(first.length == 0)return -2; //Error cannot calculate FIRST
         
         follow = new ArrayList[RS.size()];
         for(int i=0;i<RS.size();i++){
@@ -47,17 +47,18 @@ public class Syntactic {
             FOLLOW(LS.get(i), i);
         }
         
-        if(follow.length == 0)return -3;
+        if(follow.length == 0)return -3; //Error cannot calculate FOLLOW
         
         analysis_table = new String[RS.size()][terminals.size()];
         AnalysisTable();
         isCalculated = true;
-        return 1;
+        return 1; //SUCCESS
 
     }
     private static final int SOME_MAX_DEPTH = 20;
     private Set<String> alreadyProcessed = new HashSet<>();
     public Object analysisTable;
+    
     private boolean FIRST(String r, int index, int depth) {
         // Termination condition to avoid infinite recursion
         if (depth > SOME_MAX_DEPTH || alreadyProcessed.contains(r)) {
@@ -100,40 +101,65 @@ public class Syntactic {
     }
     
     private void FOLLOW(String r, int index) {
-        if (r.equals(LS.get(0)) && !follow[index].contains("#")) {
-            follow[index].add("#");
+        if (r.equals(LS.get(0))) {
+            if (follow[index] == null) {
+                follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
+            }
+            if (!follow[index].contains("#")) {
+                follow[index].add("#");
+            }
         }
-    
         for (int i = 0; i < RS.size(); i++) {
             for (int j = 0; j < RS.get(i).length; j++) {
                 String[] s = RS.get(i)[j].split("\\.");
+                
                 for (int k = 0; k < s.length; k++) {
                     if (s[k].equals(r)) {
                         if (k + 1 < s.length) {
-                            int nindex = NTindex(s[k + 1]);
+                            int nindex = NTindex(s[++k]);
                             if (nindex != -1) {
                                 boolean ep_test = false;
-                                for (String item : first[nindex]) {
-                                    if (item.equals("~")) {
-                                        ep_test = true;
-                                    } else if (!follow[index].contains(item)) {
-                                        follow[index].add(item);
-                                    }
+    
+                                if (follow[index] == null) {
+                                    follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
                                 }
-                                if (ep_test) {
-                                    for (String item : follow[nindex]) {
+    
+                                for (String item : first[nindex]) {
+                                    if (!(ep_test = ep_test || item.equals("~"))) {
                                         if (!follow[index].contains(item)) {
                                             follow[index].add(item);
                                         }
                                     }
                                 }
-                            } else if (!follow[index].contains(s[k + 1])) {
-                                follow[index].add(s[k + 1]);
+    
+                                if (!ep_test) continue;
+    
+                                if (follow[nindex] == null) {
+                                    follow[nindex] = new ArrayList<>(); // Initialize the ArrayList if it's null
+                                }
+    
+                                for (String item : follow[nindex]) {
+                                    if (!follow[index].contains(item)) {
+                                        follow[index].add(item);
+                                    }
+                                }
+                            } else if (!follow[index].contains(s[k])) {
+                                if (follow[index] == null) {
+                                    follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
+                                }
+                                follow[index].add(s[k]);
                             }
-                        } else if (i < index) {
-                            for (String item : follow[i]) {
-                                if (!follow[index].contains(item)) {
-                                    follow[index].add(item);
+                        } else {
+                            if (i < index) {
+                                if (follow[i] != null) { // Check if the ArrayList is null
+                                    for (String item : follow[i]) {
+                                        if (!follow[index].contains(item)) {
+                                            if (follow[index] == null) {
+                                                follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
+                                            }
+                                            follow[index].add(item);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -143,40 +169,60 @@ public class Syntactic {
         }
     }
     
-    private void AnalysisTable(){
+    
+    private void AnalysisTable() {
         for (int i = 0; i < RS.size(); i++) {
             for (int j = 0; j < RS.get(i).length; j++) {
-                ArrayList<String> _tmp = new ArrayList<String>();
-                String[] s = RS.get(i)[j].split("\\.");
-                for (int k = 0; k < s.length; k++) {
-                    int index = NTindex(s[k]);
-                    boolean ep_test=false;
-                    if(index != -1){
-                        
-                        for (String fst : first[index]) 
-                            if(!(ep_test=ep_test || fst.equals("~")))
-                                if(!_tmp.contains(fst))_tmp.add(fst);
+                ArrayList<String> tempSet = new ArrayList<>();
+                String[] symbols = RS.get(i)[j].split("\\.");
+                boolean epsilonPresent = false;
+    
+                for (String symbol : symbols) {
+                    if (isNonTerminal(symbol)) {
+                        int index = NTindex(symbol);
+                        for (String firstElem : first[index]) {
+                            if ("~".equals(firstElem)) {
+                                epsilonPresent = true;
+                            } else if (!tempSet.contains(firstElem)) {
+                                tempSet.add(firstElem);
+                            }
                         }
-                        else{
-                            if(!(ep_test=s[k].equals("~")))if(!_tmp.contains(s[k]))_tmp.add(s[k]);
-                        }
-                    if(ep_test)
-                        for (String flw : follow[i]) 
-                            if(!_tmp.contains(flw))_tmp.add(flw);
-                    break;
-                }
-                for (String t : _tmp) {
-                    for (int k = 0; k < terminals.size(); k++) {
-                        if(t.equals(terminals.get(k))){
-                            analysis_table[i][k] = RS.get(i)[j];
-                            break;
+                    } else {
+                        if (!"~".equals(symbol) && !tempSet.contains(symbol)) {
+                            tempSet.add(symbol);
+                        } else {
+                            epsilonPresent = true;
                         }
                     }
+    
+                    if (epsilonPresent) {
+                        for (String followElem : follow[i]) {
+                            if (!tempSet.contains(followElem)) {
+                                tempSet.add(followElem);
+                            }
+                        }
+                        break; // Break after processing follow set
+                    }
                 }
+    
+                updateAnalysisTable(i, tempSet, RS.get(i)[j]);
             }
         }
-        
     }
+    
+    private boolean isNonTerminal(String symbol) {
+        return NTindex(symbol) != -1;
+    }
+    
+    private void updateAnalysisTable(int rowIndex, ArrayList<String> symbols, String production) {
+        for (String symbol : symbols) {
+            int columnIndex = terminals.indexOf(symbol);
+            if (columnIndex != -1) {
+                analysis_table[rowIndex][columnIndex] = production;
+            }
+        }
+    }
+    
     
     boolean isNoneTerminal(String s){
         for (String LS1 : LS)

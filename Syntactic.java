@@ -1,15 +1,82 @@
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.swing.JOptionPane;
+
 public class Syntactic {
+
  ArrayList<String> LS = new ArrayList<String>();
     ArrayList<String[]> RS = new ArrayList<String[]>();
     
     ArrayList<String> terminals = new ArrayList<String>();
+      public String parse(String input) {
+        Stack<String> stack = new Stack<>();
+        stack.push("#");  // End symbol
+        stack.push(LS.get(0));  // Assuming the start symbol is the first element in LS
+
+        Lexical lexicalAnalyzer = new Lexical(input,true);
+            ArrayList<Lexical> lexemes = new ArrayList<>();
+
+           lexicalAnalyzer.processFile(lexemes);
+
+       // Lexical token = Tokens.getToken(input);  // Get the first token
+for (Lexical lexeme : lexemes){
+    System.out.println(lexeme.value);
+    while (!stack.empty()) {
+            String stackTop = stack.peek();
+            System.out.println(terminals);
+            System.out.println(stackTop);
+            if (terminals.contains(stackTop)) {
+
+                
+                if (stackTop.equals(lexeme.value)) {  // token.value gives the terminal
+                    stack.pop();
+                      // Move to the next token
+                    if (lexeme == null) break;  // End of input
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error: Unexpected symbol '" + lexeme.type + "'");
+                    return "Error";
+                }
+            } else {
+                int rowIndex = LS.indexOf(stackTop);
+                int colIndex = terminals.indexOf(lexeme.value);
+                System.out.println("row ="+ rowIndex + "col = "+colIndex);
+                System.out.println(lexeme.value);
+                System.out.println(lexeme.type);
+                if (rowIndex < 0 || colIndex < 0) {
+                    JOptionPane.showMessageDialog(null, "Error: Invalid syntax");
+                    return "Error";
+                }
+
+                stack.pop();
+                String production = analysis_table[rowIndex][colIndex];
+                if (!production.equals("~")) {  //  ~ represents epsilon
+                    String[] symbols = production.split(" ");
+                    for (int i = symbols.length - 1; i >= 0; i--) {
+                        stack.push(symbols[i]);
+                    }
+                }
+                System.out.println(stack);
+            }
+        }
+
+        if (!stack.empty() || lexeme != null) {
+            JOptionPane.showMessageDialog(null, "Error: Incomplete parsing");
+            return "Error";
+        }
+}
+        
+
+        return "Success";
+    }
+
+
+
+
+
      
     String[][] analysis_table;
     ArrayList<String>[] first;
@@ -111,9 +178,13 @@ public class Syntactic {
         }
         for (int i = 0; i < RS.size(); i++) {
             for (int j = 0; j < RS.get(i).length; j++) {
-                String[] s = RS.get(i)[j].split("\\.");
                 
-                for (int k = 0; k < s.length; k++) {
+                System.out.println("RS.get(" + i + ")[" + j + "]: " + RS.get(i)[j]);
+
+                if (RS.get(i) != null && j < RS.get(i).length) {
+                  
+                     String[] s = RS.get(i)[j].split("\\.");
+                    for (int k = 0; k < s.length; k++) {
                     if (s[k].equals(r)) {
                         if (k + 1 < s.length) {
                             int nindex = NTindex(s[++k]);
@@ -164,7 +235,11 @@ public class Syntactic {
                             }
                         }
                     }
-                }
+                }// Rest of your code...
+                } else {
+                    System.out.println("null");
+                        }                
+                
             }
         }
     }
@@ -210,9 +285,7 @@ public class Syntactic {
         }
     }
     
-    private boolean isNonTerminal(String symbol) {
-        return NTindex(symbol) != -1;
-    }
+  
     
     private void updateAnalysisTable(int rowIndex, ArrayList<String> symbols, String production) {
         for (String symbol : symbols) {
@@ -235,6 +308,9 @@ public class Syntactic {
             if(s.equals(LS.get(i)))return i;
         
         return -1;
+    }
+    private boolean isNonTerminal(String symbol) {
+        return NTindex(symbol) != -1;
     }
     
     int Tindex(String s){

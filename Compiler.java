@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
+import java.util.Vector;
 
 
 public class Compiler {
@@ -309,33 +310,34 @@ static ArrayList<Lexical> ul;
             }
         });
 
+        JTextArea resultArea = new JTextArea(10, 30);
+        resultArea.setEditable(false);
+
+        // Add components to the panel or frame
+        // Adjust this based on your existing layout and design
+        JPanel inputPanel = new JPanel();
+        inputPanel.add(new JScrollPane(resultArea));
+
+
+         JFrame frame3 = new JFrame("syn");
+         frame3.setSize(600, 400);
+         frame3.setLocationRelativeTo(null);
+        
+        frame3.add(inputPanel, BorderLayout.CENTER);
+
         submitButton2.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { 
-                
-                String text = textArea.getText().replace(";\n", ";");
-                ul = new ArrayList<>();
-                stack.clear();
-                stack.push(us.LS.get(0));
-                
-                if(text.length()==0){
-                       JOptionPane.showMessageDialog(frame, "Please enter text or choose a file for analysis.", 
-                                          "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                
-                 Lexical lexicalAnalyzer = new Lexical(text,true);
-            ArrayList<Lexical> lexemes = new ArrayList<>();
+            public void actionPerformed(ActionEvent e) {
+                String text = textArea.getText().replace(";\n", ";");;
+                String grammar = textArea2.getText();
 
-           lexicalAnalyzer.processFile(lexemes);
-           for (Lexical lexeme : lexemes){
-                System.out.println(lexeme.type +" "+ lexeme.value);
-           }
-                
-
-                if(!isSyntaxicallyCorrect(lexemes)){System.out.println("Erreur Syntaxique");JOptionPane.showMessageDialog(frame, "Syntaxic Error", "Syntaxic Error", JOptionPane.ERROR_MESSAGE);return;}
-                JOptionPane.showMessageDialog(frame, "Correct", "Correct", JOptionPane.NO_OPTION);
-                System.out.println("Correct");
-    }
+                // Assuming 'us' is your Syntactic instance and it's properly initialized
+                // You might need to modify how you handle the grammar setup and parsing
+                (us = new Syntactic()).setup(grammar);
+                String result = us.parse(text);
+                resultArea.setText(result);
+                frame3.setVisible(true);
+            }
 });
 
     
@@ -407,6 +409,7 @@ JFrame analysisFrame=new JFrame("ana table");
 
     }
     
+
 
 static boolean isSyntaxicallyCorrect(ArrayList<Lexical> ul){
         String at_result;

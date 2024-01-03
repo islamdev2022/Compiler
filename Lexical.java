@@ -38,6 +38,14 @@ public class Lexical {
     public Lexical() {
     }
 
+    public String getType() {
+        return type;
+    }
+    public String getValue() {
+        return value;
+    }
+
+
     public void processFile(ArrayList<Lexical> u) {
         getLexemes(u, this.fileContent);
     }

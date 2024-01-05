@@ -328,402 +328,447 @@ public class Compiler {
             public void actionPerformed(ActionEvent e) {
               
              
-        // Parse Tree frame
-        JFrame frame3 = new JFrame("Parse Tree");
-        frame3.setSize(900, 400);
-        frame3.setLocationRelativeTo(null);
+       // Parse Tree frame
+       JFrame frame3 = new JFrame("Parse Tree");
+       frame3.setSize(900, 400);
+       frame3.setLocationRelativeTo(null);
 
-        JList<String> input = new JList<>();
-        JList<String> stack = new JList<>();
-        JList<String> action = new JList<>();
-        JList<String> rule = new JList<>();
-        JDialog accept = new JDialog();
-        JLabel inputL = new JLabel("Input");
-        JLabel stackL = new JLabel("Stack");
-        JLabel ruleL = new JLabel("Rule");
-        JLabel actionL = new JLabel("action");
-        accept.setTitle("Accepted");
+       JList<String> input = new JList<>();
+       JList<String> stack = new JList<>();
+       JList<String> action = new JList<>();
+       JList<String> rule = new JList<>();
+       JDialog accept = new JDialog();
+       JLabel inputL = new JLabel("Input");
+       JLabel stackL = new JLabel("Stack");
+       JLabel ruleL = new JLabel("Rule");
+       JLabel actionL = new JLabel("action");
+       accept.setTitle("Accepted");
 
-        // Use GridLayout
-        frame3.setLayout(new GridLayout(2, 4)); // 2 rows, 4 columns
+       // Use GridLayout
+       frame3.setLayout(new GridLayout(2, 4)); // 2 rows, 4 columns
 
-        // Add components to the frame
-        frame3.add(inputL);
-        frame3.add(stackL);
-        frame3.add(actionL);
-        frame3.add(ruleL);
-        frame3.add(new JScrollPane(input)); // Wrap JLists in JScrollPane for scrollability
-        frame3.add(new JScrollPane(stack));
-        frame3.add(new JScrollPane(action));
-        frame3.add(new JScrollPane(rule));
+       // Add components to the frame
+       frame3.add(inputL);
+       frame3.add(stackL);
+       frame3.add(actionL);
+       frame3.add(ruleL);
+       frame3.add(new JScrollPane(input)); // Wrap JLists in JScrollPane for scrollability
+       frame3.add(new JScrollPane(stack));
+       frame3.add(new JScrollPane(action));
+       frame3.add(new JScrollPane(rule));
 
-        // Show the frame
-        frame3.setVisible(true);
+       // Show the frame
+       frame3.setVisible(true);
 
-        action.removeAll();
-        rule.removeAll();
-        stack.removeAll();
-        input.removeAll();
-        Stack<String> p1 = new Stack<String>();
-        Stack<String> p2 = new Stack<String>();
-        Stack<String> p3 = new Stack<String>();
-        Stack<String> p5 = new Stack<String>();
+       action.removeAll();
+       rule.removeAll();
+       stack.removeAll();
+       input.removeAll();
+       Stack<String> p1 = new Stack<String>();
+       Stack<String> p2 = new Stack<String>();
+       Stack<String> p3 = new Stack<String>();
+       Stack<String> p5 = new Stack<String>();
+
+      
+       p1.push("#");
+       p2.push("#");
+       String py = "";
+
+       String ar1[] = new String[100];
+       String ar2[] = new String[100];
+
+       String text = textArea.getText();
+
+        Lexical lexicalAnalyzer = new Lexical(text, true);
+           ArrayList<Lexical> lexemes = new ArrayList<>();
+
+           lexicalAnalyzer.processFile(lexemes);
 
        
-        p1.push("#");
-        p2.push("#");
-        String py = "";
 
-        String ar1[] = new String[100];
-        String ar2[] = new String[100];
-
-        String text = textArea.getText();
-
-         Lexical lexicalAnalyzer = new Lexical(text, true);
-            ArrayList<Lexical> lexemes = new ArrayList<>();
-
-            lexicalAnalyzer.processFile(lexemes);
-
+       for (int ccc = 0; ccc < ar2.length; ccc++) {
+           ar2[ccc] = "";
+       }
         
 
-        for (int ccc = 0; ccc < ar2.length; ccc++) {
-            ar2[ccc] = "";
-        }
-         
+       for (int jc = lexemes.size() - 1; jc >= 0; jc--) {
+           
+           p1.push(lexemes.get(jc).getValue());
+       }
 
-        for (int jc = lexemes.size() - 1; jc >= 0; jc--) {
-            
-            p1.push(lexemes.get(jc).getValue());
-        }
+       int rrr = 0;
+       String ar4[] = new String[50];
+       String[] LSstring = new String[us.LS.size()];
+       
+       if (rrr == 0)
+           p2.push(us.LS.toArray(LSstring)[0]);
 
-        int rrr = 0;
-        String ar4[] = new String[50];
-        String[] LSstring = new String[us.LS.size()];
-        
-        if (rrr == 0)
-            p2.push(us.LS.toArray(LSstring)[0]);
+       String mm1 = "";
+       p5.addAll(p2);
 
-        String mm1 = "";
-        p5.addAll(p2);
+       p3.addAll(p1);
+       String[] terminalsS = us.terminals.toArray(new String[0]) ;// to convert the arrayList to a string[]
+       System.out.println(Arrays.toString(terminalsS));
+       DefaultListModel<String> modelRule;
+       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
+       // create a new one.
+       if (rule.getModel() instanceof DefaultListModel) {
+           modelRule = (DefaultListModel<String>) rule.getModel();
+       } else {
+           modelRule = new DefaultListModel<>();
+           rule.setModel(modelRule);
+       }
 
-        p3.addAll(p1);
-        String[] terminalsS = us.terminals.toArray(new String[0]) ;// to convert the arrayList to a string[]
-        System.out.println(Arrays.toString(terminalsS));
-        DefaultListModel<String> modelRule;
-        // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
-        // create a new one.
-        if (rule.getModel() instanceof DefaultListModel) {
-            modelRule = (DefaultListModel<String>) rule.getModel();
-        } else {
-            modelRule = new DefaultListModel<>();
-            rule.setModel(modelRule);
-        }
+       // Add an element to the model
+       modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us
+               .getIndex(terminalsS, p3.peek().toString())]);
+       mm1 = us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us.getIndex(terminalsS,
+               p3.peek().toString())];
+       int jkk = 0;
+       int jk = 0;
+       String fy = "";
+       while (!p5.empty()) {
+           ar2[jkk] = p5.peek().toString();
 
-        // Add an element to the model
-        modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us
-                .getIndex(terminalsS, p3.peek().toString())]);
-        mm1 = us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us.getIndex(terminalsS,
-                p3.peek().toString())];
-        int jkk = 0;
-        int jk = 0;
-        String fy = "";
-        while (!p5.empty()) {
-            ar2[jkk] = p5.peek().toString();
+           p5.pop();
+           jkk++;
+       }
+       int lss = ar2.length - 1;
+       while (lss >= 0) {
+           if (ar2[lss] != "")
+               py = py + ar2[lss] + " ";
+           lss--;
+       }
 
-            p5.pop();
-            jkk++;
-        }
-        int lss = ar2.length - 1;
-        while (lss >= 0) {
-            if (ar2[lss] != "")
-                py = py + ar2[lss] + " ";
-            lss--;
-        }
+       DefaultListModel<String> modelInput;
 
-        DefaultListModel<String> modelInput;
+       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
+       // create a new one.
+       if (input.getModel() instanceof DefaultListModel) {
+           modelInput = (DefaultListModel<String>) input.getModel();
+       } else {
+           modelInput = new DefaultListModel<>();
+           input.setModel(modelInput);
+       }
+       
+       DefaultListModel<String> modelStack;
+       if (stack.getModel() instanceof DefaultListModel) {
+           modelStack = (DefaultListModel<String>) stack.getModel();
+       } else {
+           modelStack = new DefaultListModel<>();
+           stack.setModel(modelStack);
+       }
 
-        // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
-        // create a new one.
-        if (input.getModel() instanceof DefaultListModel) {
-            modelInput = (DefaultListModel<String>) input.getModel();
-        } else {
-            modelInput = new DefaultListModel<>();
-            input.setModel(modelInput);
-        }
-        
-        DefaultListModel<String> modelStack;
-        if (stack.getModel() instanceof DefaultListModel) {
-            modelStack = (DefaultListModel<String>) stack.getModel();
-        } else {
-            modelStack = new DefaultListModel<>();
-            stack.setModel(modelStack);
-        }
+       // Add an element to the model
+       modelStack.addElement(py.toString()); //from input to stack 
+       while (!p3.empty()) {
+           ar1[jk] = p3.peek().toString();
+           fy = fy + ar1[jk] + " ";
+           p3.pop();
+           jk++;
+       }
 
-        // Add an element to the model
-        modelStack.addElement(py.toString()); //from input to stack 
-        while (!p3.empty()) {
-            ar1[jk] = p3.peek().toString();
-            fy = fy + ar1[jk] + " ";
-            p3.pop();
-            jk++;
-        }
+       DefaultListModel<String> modelAction;
 
-        DefaultListModel<String> modelAction;
+       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
+       // create a new one.
+       if (action.getModel() instanceof DefaultListModel) {
+           modelAction = (DefaultListModel<String>) action.getModel();
+       } else {
+           modelAction = new DefaultListModel<>();
+           action.setModel(modelAction);
+       }
 
-        // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
-        // create a new one.
-        if (action.getModel() instanceof DefaultListModel) {
-            modelAction = (DefaultListModel<String>) action.getModel();
-        } else {
-            modelAction = new DefaultListModel<>();
-            action.setModel(modelAction);
-        }
+       
 
-        
+       modelAction.addElement("production");
+       modelInput.addElement(fy); // from stack to input
+       int ee = 0;
+       int kk = 0;
 
-        modelAction.addElement("production");
-        modelInput.addElement(fy); // from stack to input
-        int ee = 0;
-        int kk = 0;
+       // *******************************************part 2***********************************************//
 
-        // *******************************************part 2***********************************************//
+       String o3 = "";
+       String o1 = "";
+       String o2 = "";
+       int flag = 0;
+       
+       while (!p1.empty()) {
+           flag = 0;
 
-        String o3 = "";
-        String o1 = "";
-        String o2 = "";
-        int flag = 0;
-        
-        while (!p1.empty()) {
-            flag = 0;
+           if (Syntactic.checking(terminalsS, p1.peek().toString())
+                   && Syntactic.checking(terminalsS, p2.peek().toString())
+                   && !GET_TYPE_OF_ArrayList(lexemes, p1.peek().toString()).equals(("identifier"))
+                   && (!p1.peek().equals(p2.peek()))) {
+               JOptionPane.showMessageDialog(null, "Problem Syntactic :  Error");
+               modelAction.addElement("ERROR");
+               modelRule.addElement("ERROR");
+               break;
 
-            if (Syntactic.checking(terminalsS, p1.peek().toString())
-                    && Syntactic.checking(terminalsS, p2.peek().toString())
-                    && !GET_TYPE_OF_ArrayList(lexemes, p1.peek().toString()).equals(("identifier"))
-                    && (!p1.peek().equals(p2.peek()))) {
-                JOptionPane.showMessageDialog(null, "Problem Syntactic :  Error");
-                modelAction.addElement("ERROR");
-                modelRule.addElement("ERROR");
-                break;
+           }
+           if (GET_TYPE_OF_ArrayList(lexemes, p1.peek().toString()).equals(("identifier"))
+                   && Syntactic.checking(terminalsS, p2.peek().toString())
+                   && !p2.peek().equals("Identifier")) {
+               JOptionPane.showMessageDialog(null, "Problem Syntactic :  Error");
+               modelAction.addElement("ERROR");
+               modelRule.addElement("ERROR");
+               break;
+           }
 
-            }
-            if (GET_TYPE_OF_ArrayList(lexemes, p1.peek().toString()).equals(("identifier"))
-                    && Syntactic.checking(terminalsS, p2.peek().toString())
-                    && !p2.peek().equals("Identifier")) {
-                JOptionPane.showMessageDialog(null, "Problem Syntactic :  Error");
-                modelAction.addElement("ERROR");
-                modelRule.addElement("ERROR");
-                break;
-            }
+           if ((p1.peek().equals("#") && !p2.peek().equals("#"))
+                   || (p2.peek().equals("#") && !p1.peek().equals("#"))) {
 
-            if ((p1.peek().equals("#") && !p2.peek().equals("#"))
-                    || (p2.peek().equals("#") && !p1.peek().equals("#"))) {
+               if (Syntactic.checking(terminalsS, p1.peek().toString()) && Syntactic.checking(terminalsS, p2.peek().toString())) {
+                   JOptionPane.showMessageDialog(null, "Problem Syntactic :  Error");
+                   modelAction.addElement("ERROR");
+                   modelRule.addElement("ERROR");
+                   break;
+               }
+         }
+           if (ee == 0) {
+               int uu = mm1.indexOf("->");
+               System.out.println("uu" + uu);
+               mm1 = mm1.replace(mm1.substring(0, uu + 1), "");
+               mm1 = mm1.replaceFirst(" ", "");
+               System.out.println("mm1++++" + mm1);
+               if (mm1.equals("~")) {
+                   System.out.println("epsilon");
+                   mm1 = "";
 
-                if (Syntactic.checking(terminalsS, p1.peek().toString()) && Syntactic.checking(terminalsS, p2.peek().toString())) {
-                    JOptionPane.showMessageDialog(null, "Problem Syntactic :  Error");
-                    modelAction.addElement("ERROR");
-                    modelRule.addElement("ERROR");
-                    break;
-                }
-          }
-            if (ee == 0) {
-                int uu = mm1.indexOf("->");
-                System.out.println("uu" + uu);
-                mm1 = mm1.replace(mm1.substring(0, uu + 1), "");
-                mm1 = mm1.replaceFirst(" ", "");
-                System.out.println("mm1++++" + mm1);
-                if (mm1.equals("~")) {
-                    System.out.println("epsilon");
-                    mm1 = "";
+               }
 
-                }
+               ar4 = mm1.split("\\.");
+               for (int kkj = 0; kkj < ar4.length; kkj++) {
+                   System.out.println("tableau    ->>>>>>>" + ar4[kkj] + " ");
+               }
+               // mettre le tableau (split) dans la pile
+               int lss1 = ar4.length - 1;
+               p2.pop();
+               System.out.println("p2.peek   " + p2.peek());
+               while (lss1 >= 0) {
+                   if (ar4[lss1] != "") {
 
-                ar4 = mm1.split("\\.");
-                for (int kkj = 0; kkj < ar4.length; kkj++) {
-                    System.out.println("tableau    ->>>>>>>" + ar4[kkj] + " ");
-                }
-                // mettre le tableau (split) dans la pile
-                int lss1 = ar4.length - 1;
-                p2.pop();
-                System.out.println("p2.peek   " + p2.peek());
-                while (lss1 >= 0) {
-                    if (ar4[lss1] != "") {
+                       p2.push(ar4[lss1]);
 
-                        p2.push(ar4[lss1]);
-
-                    }
-                    lss1--;
-                }
-
-                System.out.println("is empty ===" + p3.empty());
-                System.out.println("is empty is s  ===" + p5.empty());
-
-                p5.addAll(p2);
-                p3.addAll(p1);
-            }
-            System.out.println("p5.peek " + p5.peek());
-            System.out.println("pile abcdefjh ==" + p2.toString());
-            System.out.println("pile ==" + p5.toString());
-
-            jk = 0;
-
-            jkk = 0;
-            py = "";
-            fy = "";
-
-            // for matching cases
-
-            o1 = p5.peek().toString();
-            o2 = p3.peek().toString();
-            if (p5.peek().equals(p3.peek()) || (!Syntactic.checking(us.LS.toArray(LSstring), o2)
-                    && !Syntactic.checking(terminalsS, o2) && o1.equals("Identifier"))) {
-
-                System.out.println(" befor py +++" + py);
-                ee = 1;
-                for (int yu = 0; yu < ar2.length; yu++) {
-                    if (ar2[yu] != "")
-                        System.out.println("Yu " + ar2[yu]);
-                }
-
-                while (!p5.empty()) {
-
-                    ar2[jkk] = p5.peek().toString();
-
-                    p5.pop();
-                    jkk++;
-                }
-
-                lss = ar2.length - 1;
-                while (lss >= 0) {
-                    if (ar2[lss] != "") {
-                        py = py + ar2[lss] + " ";
-
-                    }
-
-                    lss--;
-                }
-                System.out.println("+py " + py);
-                while (!p3.empty()) {
-                    ar1[jk] = p3.peek().toString();
-                    fy = fy + ar1[jk] + " ";
-                    p3.pop();
-                    jk++;
-                }
-
-                modelStack.addElement(py.toString());
-                modelInput.addElement(fy.toString());
-                p1.pop();
-                p2.pop();
-
-                p5.addAll(p2);
-                p3.addAll(p1);
-
-                modelAction.addElement("Matching");
-                modelRule.addElement("----");
-                System.out.println("hello");
-
-                for (int ccc = 0; ccc < ar2.length; ccc++) {
-                    ar2[ccc] = "";
-                }
-
-                if (p1.empty() && p2.empty()) {
-                    System.out.println("p1.empty()&&p2.empty()");
-                    modelStack.addElement("");
-                    modelInput.addElement("");
-                    modelRule.addElement("");
-                    modelAction.addElement("");
-                    accept.setVisible(true);
-                }
-
-            }
-
-            else if (!o1.equals(o2)) {
-
-                ee = 0;
-
-                if (!Syntactic.checking(terminalsS, p2.peek().toString())) {
-                    for (int op = 0; op < lexemes.size(); op++) {
-
-                        if (lexemes.get(op).getValue().equals(p3.peek().toString())) {
-                            if (lexemes.get(op).getType().equals("Identifier")) {
-
-                                o3 = lexemes.get(op).getType();
-                                flag = 1;
-                                break;
-                            }
-                        }
-                    }
-                    System.out.println("O3 = " + o3);
-
-                }
-                if (flag == 1) {
-                    mm1 = us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us.getIndex(terminalsS, o3)];
-
-                    modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us.getIndex(terminalsS, o3)]);
-                } else {
-                    System.out.println(us.LS.toArray(LSstring).length); 
-                        
-                   System.out.println(terminalsS.length); 
-                        
-                   int index1 = us.getIndex(LSstring, p5.peek().toString());
-                   int index2 = us.getIndex(terminalsS, p3.peek().toString());
-                   
-                   // Check if indices are valid
-                   if (index1 != -1 && index2 != -1) {
-                       mm1 = us.analysis_table[index1][index2];
-                   } else {
-                       if (index1 == -1) {
-                        System.out.println("index 1 ============================-1");
-                       }
-                       if (index2 == -1) {
-                        System.out.println("index 2 ============================-1");
-                        System.out.println(p3.peek().toString());
-                        System.out.println(Arrays.toString(terminalsS));
-                       }
-                       
                    }
-                    modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us.getIndex(terminalsS, p3.peek().toString())]);
+                   lss1--;
+               }
+
+               System.out.println("is empty ===" + p3.empty());
+               System.out.println("is empty is s  ===" + p5.empty());
+
+               p5.addAll(p2);
+               p3.addAll(p1);
+           }
+           System.out.println("p5.peek " + p5.peek());
+           System.out.println("pile abcdefjh ==" + p2.toString());
+           System.out.println("pile ==" + p5.toString());
+
+           jk = 0;
+
+           jkk = 0;
+           py = "";
+           fy = "";
+
+           // for matching cases
+
+           o1 = p5.peek().toString();
+           o2 = p3.peek().toString();
+           if (p5.peek().equals(p3.peek()) || (!Syntactic.checking(us.LS.toArray(LSstring), o2)
+                   && !Syntactic.checking(terminalsS, o2) && o1.equals("Identifier"))) {
+
+               System.out.println(" befor py +++" + py);
+               ee = 1;
+               for (int yu = 0; yu < ar2.length; yu++) {
+                   if (ar2[yu] != "")
+                       System.out.println("Yu " + ar2[yu]);
+               }
+
+               while (!p5.empty()) {
+
+                   ar2[jkk] = p5.peek().toString();
+
+                   p5.pop();
+                   jkk++;
+               }
+
+               lss = ar2.length - 1;
+               while (lss >= 0) {
+                   if (ar2[lss] != "") {
+                       py = py + ar2[lss] + " ";
+
+                   }
+
+                   lss--;
+               }
+               System.out.println("+py " + py);
+               while (!p3.empty()) {
+                   ar1[jk] = p3.peek().toString();
+                   fy = fy + ar1[jk] + " ";
+                   p3.pop();
+                   jk++;
+               }
+
+               modelStack.addElement(py.toString());
+               modelInput.addElement(fy.toString());
+               p1.pop();
+               p2.pop();
+
+               p5.addAll(p2);
+               p3.addAll(p1);
+
+               modelAction.addElement("Matching");
+               modelRule.addElement("----");
+               System.out.println("hello");
+
+               for (int ccc = 0; ccc < ar2.length; ccc++) {
+                   ar2[ccc] = "";
+               }
+
+               if (p1.empty() && p2.empty()) {
+                   System.out.println("p1.empty()&&p2.empty()");
+                   modelStack.addElement("");
+                   modelInput.addElement("");
+                   modelRule.addElement("");
+                   modelAction.addElement("");
+                   accept.setVisible(true);
+               }
+
+           }
+
+           else if (!o1.equals(o2)) {
+
+               ee = 0;
+
+               if (!Syntactic.checking(terminalsS, p2.peek().toString())) {
+                   for (int op = 0; op < lexemes.size(); op++) {
+
+                       if (lexemes.get(op).getValue().equals(p3.peek().toString())) {
+                           if (lexemes.get(op).getType().equals("Identifier")) {
+
+                               o3 = lexemes.get(op).getType();
+                               flag = 1;
+                               break;
+                           }
+                       }
+                   }
+                   System.out.println("O3 = " + o3);
+
+               }
+               if (flag == 1) { 
+                if (p5.peek().toString().equals(",")){
+                    p5.removeElement(",");
+                    p5.add("<Attributes>");
+                    System.out.println("p2" + p2.peek().toString());
+                    int index1 = us.getIndex(LSstring, p5.peek().toString());
+                   int index2 = us.getIndex(terminalsS, o3);
+                   System.out.println("p5555555555555555555555555555"+p5.peek().toString());
+                   System.out.println("LSSSSSSSSSSSSSSSSSSSSSSSSTRING"+Arrays.toString(LSstring));
+                    System.out.println("index 1 ============================"+index1);
+                 
+                   mm1 = us.analysis_table[index1][index2];
+                   modelRule.addElement(us.analysis_table[index1][index2]);
+                }else{
+                    int index1 = us.getIndex(LSstring, p5.peek().toString());
+                   int index2 = us.getIndex(terminalsS, o3);
+                   System.out.println("p5555555555555555555555555555"+p5.peek().toString());
+                   System.out.println("LSSSSSSSSSSSSSSSSSSSSSSSSTRING"+Arrays.toString(LSstring));
+                    System.out.println("index 1 ============================"+index1);
+                   
+              
+              
+                  
+                   mm1 = us.analysis_table[index1][index2];
+                   modelRule.addElement(us.analysis_table[index1][index2]);
 
                 }
 
-                while (!p5.empty()) {
-                    ar2[jkk] = p5.peek().toString();
+                   
+                   
+               } else {
+                   System.out.println(us.LS.toArray(LSstring).length); 
+                       
+                  System.out.println(terminalsS.length); 
+                       
+                  int index1 = us.getIndex(LSstring, p5.peek().toString());
+                  int index2 = us.getIndex(terminalsS, p3.peek().toString());
+                  
+                  // Check if indices are valid
+                  if (index1 != -1 && index2 != -1) {
+                      mm1 = us.analysis_table[index1][index2];
+                  } else {
+                      if (index1 == -1) {
+                       System.out.println("index 1 ============================-1");
+                      }
+                      if (index2 == -1) {
+                       System.out.println("index 2 ============================-1");
+                       System.out.println(p3.peek().toString());
+                       System.out.println(Arrays.toString(terminalsS));
+                      }
+                      
+                  }
+                  int i1 = us.getIndex(LSstring, p5.peek().toString());
+                  int i2 = us.getIndex(terminalsS, p3.peek().toString());
+                  
+                  // Check if indices are valid
+                  if (i1 != -1 && i2 != -1) {
+                      mm1 = us.analysis_table[index1][index2];
+                      modelRule.addElement(us.analysis_table[i1][i2]);
+                  } else {
+                      if (i1 == -1) {
+                       System.out.println("i 1 ============================-1");
+                      }
+                      if (i2 == -1) {
+                       System.out.println("i 2 ============================-1");
+                       System.out.println(p3.peek().toString());
+                       System.out.println(Arrays.toString(terminalsS));
+                      }
+                      
+                  }
+                  
 
-                    p5.pop();
-                    jkk++;
-                }
-                lss = ar2.length - 1;
-                while (lss >= 0) {
-                    if (ar2[lss] != "")
-                        py = py + ar2[lss] + " ";
-                    lss--;
-                }
-                System.out.println("this is a test to see what's PY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + py);
-                modelStack.addElement(py.toString()); 
-                System.out.println("where the fuck is terminals!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +terminalsS);
-                while (!p3.empty()) {
-                    ar1[jk] = p3.peek().toString();
-                    fy = fy + ar1[jk] + " ";
-                    p3.pop();
-                    jk++;
-                }
-                modelInput.addElement(fy);
-                if (mm1.equals("") || mm1.equals(null)) {
+               }
 
-                    JOptionPane.showMessageDialog(null, "Problem writing :  Error");
-                    modelAction.addElement("ERROR");
-                    modelRule.addElement("ERROR");
-                    break;
-                }
-                modelAction.addElement("production");
+               while (!p5.empty()) {
+                   ar2[jkk] = p5.peek().toString();
 
-                for (int yu = 0; yu < ar2.length; yu++) {
-                    ar2[yu] = "";
+                   p5.pop();
+                   jkk++;
+               }
+               lss = ar2.length - 1;
+               while (lss >= 0) {
+                   if (ar2[lss] != "")
+                       py = py + ar2[lss] + " ";
+                   lss--;
+               }
+               System.out.println("this is a test to see what's PY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + py);
+               modelStack.addElement(py.toString()); 
+               System.out.println("where the fuck is terminals!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +terminalsS);
+               while (!p3.empty()) {
+                   ar1[jk] = p3.peek().toString();
+                   fy = fy + ar1[jk] + " ";
+                   p3.pop();
+                   jk++;
+               }
+               modelInput.addElement(fy);
+               if (mm1.equals("") || mm1.equals(null)) {
 
-                }
-            }
+                   JOptionPane.showMessageDialog(null, "Problem writing :  Error");
+                   modelAction.addElement("ERROR");
+                   modelRule.addElement("ERROR");
+                   break;
+               }
+               modelAction.addElement("production");
 
-            kk++;
-        }
+               for (int yu = 0; yu < ar2.length; yu++) {
+                   ar2[yu] = "";
+
+               }
+           }
+
+           kk++;
+       }
+   
     
      
 

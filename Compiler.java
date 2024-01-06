@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,11 +11,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
-import java.util.Vector;
 
 public class Compiler {
     static Syntactic us;
-   public static ArrayList<Lexical> lexemes = new ArrayList<>();
+    public static ArrayList<Lexical> lexemes = new ArrayList<>();
 
     public static void main(String[] args) {
         
@@ -247,6 +244,8 @@ public class Compiler {
         JButton analyzeBtnTable = new JButton("Predictive Table");
         firstFollowFrame.getContentPane().add(analyzeBtnTable, BorderLayout.SOUTH);
         // END
+
+
         testGrammar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -322,6 +321,8 @@ public class Compiler {
                 setup_anaframe();
             }
         });
+
+        //parse Tree
 
         submitButton2.addActionListener(new ActionListener() {
             @Override
@@ -644,7 +645,7 @@ public class Compiler {
                    for (int op = 0; op < lexemes.size(); op++) {
 
                        if (lexemes.get(op).getValue().equals(p3.peek().toString())) {
-                           if (lexemes.get(op).getType().equals("Identifier")) {
+                           if (lexemes.get(op).getType().equals("Identifier")||lexemes.get(op).getType().equals(",")) {
 
                                o3 = lexemes.get(op).getType();
                                flag = 1;
@@ -656,33 +657,19 @@ public class Compiler {
 
                }
                if (flag == 1) { 
-                if (p5.peek().toString().equals(",")){
-                    p5.removeElement(",");
-                    p5.add("<Attributes>");
-                    System.out.println("p2" + p2.peek().toString());
+                
                     int index1 = us.getIndex(LSstring, p5.peek().toString());
                    int index2 = us.getIndex(terminalsS, o3);
                    System.out.println("p5555555555555555555555555555"+p5.peek().toString());
                    System.out.println("LSSSSSSSSSSSSSSSSSSSSSSSSTRING"+Arrays.toString(LSstring));
-                    System.out.println("index 1 ============================"+index1);
-                 
-                   mm1 = us.analysis_table[index1][index2];
-                   modelRule.addElement(us.analysis_table[index1][index2]);
-                }else{
-                    int index1 = us.getIndex(LSstring, p5.peek().toString());
-                   int index2 = us.getIndex(terminalsS, o3);
-                   System.out.println("p5555555555555555555555555555"+p5.peek().toString());
-                   System.out.println("LSSSSSSSSSSSSSSSSSSSSSSSSTRING"+Arrays.toString(LSstring));
-                    System.out.println("index 1 ============================"+index1);
+                   System.out.println("index 1 ============================"+index1);
                    
               
               
-                  
+                   
                    mm1 = us.analysis_table[index1][index2];
                    modelRule.addElement(us.analysis_table[index1][index2]);
-
-                }
-
+                   
                    
                    
                } else {
@@ -725,8 +712,8 @@ public class Compiler {
                       }
                       
                   }
-                  
-
+                  System.out.println("THIS IS P3"+p3.peek().toString());
+                 
                }
 
                while (!p5.empty()) {
@@ -838,7 +825,7 @@ public class Compiler {
             }
             System.out.println(); // New line at the end of a row
         }
-        JFrame analysisFrame = new JFrame("ana table");
+        JFrame analysisFrame = new JFrame("Analysis Table");
 
         // Assuming 'at' is your JTable
         JTable at = new JTable(model);

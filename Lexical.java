@@ -31,7 +31,7 @@ public class Lexical {
 
     public Lexical(String text, boolean isText) {
         if (isText) {
-            this.fileContent = text;
+            Lexical.fileContent = text;
         }
     }
 
@@ -47,7 +47,7 @@ public class Lexical {
 
 
     public void processFile(ArrayList<Lexical> u) {
-        getLexemes(u, this.fileContent);
+        getLexemes(u, Lexical.fileContent);
     }
 
     //Functions

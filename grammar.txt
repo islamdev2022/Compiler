@@ -1,4 +1,4 @@
-ts={entities,relations,key,Identifier,one-one,one-many,zero-one,zero-many,Left Parenthesis,Right Parenthesis,Semicolon,:,comma};end;
+ts={entities,relations,key,Identifier,one-one,one-many,zero-one,zero-many,Left Parenthesis,Right Parenthesis,;,:,comma};end;
 <ER>->entities.:.<Entities>.relations.:.<Relations>;end;
 <Entities>-><Entity>.<REntities>;end;
 <Entity>->Identifier.:.key.(.Identifier.).,.<Attributes>.;;end;

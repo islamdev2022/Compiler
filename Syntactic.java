@@ -7,72 +7,10 @@ public class Syntactic {
 
     ArrayList<String> LS = new ArrayList<String>();
     ArrayList<String[]> RS = new ArrayList<String[]>();
-
     ArrayList<String> terminals = new ArrayList<String>();
-    // public String parse(String input) {
-    // Stack<String> stack = new Stack<>();
-    // stack.push("#"); // End symbol
-    // stack.push(LS.get(0)); // Assuming the start symbol is the first element in
-    // LS
-
-    // Lexical lexicalAnalyzer = new Lexical(input,true);
-    // ArrayList<Lexical> lexemes = new ArrayList<>();
-
-    // lexicalAnalyzer.processFile(lexemes);
-
-    // // Lexical token = Tokens.getToken(input); // Get the first token
-    // for (Lexical lexeme : lexemes){
-    // System.out.println(lexeme.value);
-    // while (!stack.empty()) {
-    // String stackTop = stack.peek();
-    // System.out.println(terminals);
-    // System.out.println(stackTop);
-    // if (terminals.contains(stackTop)) {
-
-    // if (stackTop.equals(lexeme.value)) { // token.value gives the terminal
-    // stack.pop();
-    // // Move to the next token
-    // if (lexeme == null) break; // End of input
-    // } else {
-    // JOptionPane.showMessageDialog(null, "Error: Unexpected symbol '" +
-    // lexeme.type + "'");
-    // return "Error";
-    // }
-    // } else {
-    // int rowIndex = LS.indexOf(stackTop);
-    // int colIndex = terminals.indexOf(lexeme.value);
-    // System.out.println("row ="+ rowIndex + "col = "+colIndex);
-    // System.out.println(lexeme.value);
-    // System.out.println(lexeme.type);
-    // if (rowIndex < 0 || colIndex < 0) {
-    // JOptionPane.showMessageDialog(null, "Error: Invalid syntax");
-    // return "Error";
-    // }
-
-    // stack.pop();
-    // String production = analysis_table[rowIndex][colIndex];
-    // if (!production.equals("~")) { // ~ represents epsilon
-    // String[] symbols = production.split(" ");
-    // for (int i = symbols.length - 1; i >= 0; i--) {
-    // stack.push(symbols[i]);
-    // }
-    // }
-    // System.out.println(stack);
-    // }
-    // }
-
-    // if (!stack.empty() || lexeme != null) {
-    // JOptionPane.showMessageDialog(null, "Error: Incomplete parsing");
-    // return "Error";
-    // }
-    // }
-
-    // return "Success";
-    // }
-
-    String[][] analysis_table;
     ArrayList<String>[] first;
     ArrayList<String>[] follow;
+    String[][] analysis_table;
 
     boolean isCalculated = false;
 
@@ -102,7 +40,7 @@ public class Syntactic {
         if (first.length == 0)
             return -2; // Error cannot calculate FIRST
 
-        follow = new ArrayList[RS.size()];
+        follow  = new ArrayList[RS.size()];
         for (int i = 0; i < RS.size(); i++) {
             follow[i] = new ArrayList<String>();
             FOLLOW(LS.get(i), i);
@@ -146,7 +84,6 @@ public class Syntactic {
             s = RS.get(i)[j].split("\\.");
             if (s[k].equals("~")) {
                 ep_test = false;
-                continue;
             } else {
                 if (isNoneTerminal(s[k])) {
                     ep_test = ep_test && FIRST(s[k], index, depth + 1);
@@ -167,9 +104,6 @@ public class Syntactic {
 
     private void FOLLOW(String r, int index) {
         if (r.equals(LS.get(0))) {
-            if (follow[index] == null) {
-                follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
-            }
             if (!follow[index].contains("#")) {
                 follow[index].add("#");
             }
@@ -188,10 +122,6 @@ public class Syntactic {
                                 int nindex = NTindex(s[++k]);
                                 if (nindex != -1) {
                                     boolean ep_test = false;
-
-                                    if (follow[index] == null) {
-                                        follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
-                                    }
 
                                     for (String item : first[nindex]) {
                                         if (!(ep_test = ep_test || item.equals("~"))) {
@@ -213,10 +143,8 @@ public class Syntactic {
                                             follow[index].add(item);
                                         }
                                     }
-                                } else if (!follow[index].contains(s[k])) {
-                                    if (follow[index] == null) {
-                                        follow[index] = new ArrayList<>(); // Initialize the ArrayList if it's null
-                                    }
+                                }else if (!follow[index].contains(s[k])) {
+                                    
                                     follow[index].add(s[k]);
                                 }
                             } else {
@@ -224,10 +152,7 @@ public class Syntactic {
                                     if (follow[i] != null) { // Check if the ArrayList is null
                                         for (String item : follow[i]) {
                                             if (!follow[index].contains(item)) {
-                                                if (follow[index] == null) {
-                                                    follow[index] = new ArrayList<>(); // Initialize the ArrayList if
-                                                                                       // it's null
-                                                }
+                                               
                                                 follow[index].add(item);
                                             }
                                         }
@@ -235,11 +160,8 @@ public class Syntactic {
                                 }
                             }
                         }
-                    } // Rest of your code...
-                } else {
-                    System.out.println("null");
-                }
-
+                    } 
+                } 
             }
         }
     }

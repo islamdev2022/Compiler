@@ -174,6 +174,7 @@ public class Syntactic {
                 boolean epsilonPresent = false;
 
                 for (String symbol : symbols) {
+                    epsilonPresent = false;
                     if (isNonTerminal(symbol)) {
                         int index = NTindex(symbol);
                         for (String firstElem : first[index]) {
@@ -182,10 +183,12 @@ public class Syntactic {
                             } else if (!tempSet.contains(firstElem)) {
                                 tempSet.add(firstElem);
                             }
+                            break;
                         }
                     } else {
                         if (!"~".equals(symbol) && !tempSet.contains(symbol)) {
                             tempSet.add(symbol);
+                            break;
                         } else {
                             epsilonPresent = true;
                         }
@@ -202,6 +205,7 @@ public class Syntactic {
                 }
 
                 updateAnalysisTable(i, tempSet, RS.get(i)[j]);
+               
             }
         }
     }
@@ -250,7 +254,7 @@ public class Syntactic {
             if (t_g.length == 1)
                 return null;
 
-            String[] ts = t_g[0].split("\\{")[1].split("}")[0].split(","); // for terminals
+            String[] ts = t_g[0].split("\\{")[1].split("}")[0].split(" "); // for terminals
             for (String t : ts)
                 terminals.add(t);
             terminals.add("#");

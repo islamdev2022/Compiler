@@ -344,6 +344,7 @@ public class Compiler {
        JLabel ruleL = new JLabel("Rule");
        JLabel actionL = new JLabel("action");
        accept.setTitle("Accepted");
+       accept.setLocationRelativeTo(null);
 
        // Use GridLayout
        frame3.setLayout(new GridLayout(2, 4)); // 2 rows, 4 columns
@@ -597,7 +598,7 @@ public class Compiler {
                while (lss >= 0) {
                    if (ar2[lss] != "") {
                        py = py + ar2[lss] + " ";
-
+                    System.out.println(" py = py + ar2[lss] + \" \";"+py);
                    }
 
                    lss--;
@@ -608,6 +609,7 @@ public class Compiler {
                    fy = fy + ar1[jk] + " ";
                    p3.pop();
                    jk++;
+                   System.out.println("loop fy" + fy);
                }
 
                modelStack.addElement(py.toString());
@@ -620,7 +622,6 @@ public class Compiler {
 
                modelAction.addElement("Matching");
                modelRule.addElement("----");
-               System.out.println("hello");
 
                for (int ccc = 0; ccc < ar2.length; ccc++) {
                    ar2[ccc] = "";
@@ -645,7 +646,7 @@ public class Compiler {
                    for (int op = 0; op < lexemes.size(); op++) {
 
                        if (lexemes.get(op).getValue().equals(p3.peek().toString())) {
-                           if (lexemes.get(op).getType().equals("Identifier")||lexemes.get(op).getType().equals(",")) {
+                           if (lexemes.get(op).getType().equals("Identifier")) {
 
                                o3 = lexemes.get(op).getType();
                                flag = 1;
@@ -664,7 +665,7 @@ public class Compiler {
                    System.out.println("LSSSSSSSSSSSSSSSSSSSSSSSSTRING"+Arrays.toString(LSstring));
                    System.out.println("index 1 ============================"+index1);
                    
-              
+                  
               
                    
                    mm1 = us.analysis_table[index1][index2];
@@ -728,9 +729,8 @@ public class Compiler {
                        py = py + ar2[lss] + " ";
                    lss--;
                }
-               System.out.println("this is a test to see what's PY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + py);
+             
                modelStack.addElement(py.toString()); 
-               System.out.println("where the fuck is terminals!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +terminalsS);
                while (!p3.empty()) {
                    ar1[jk] = p3.peek().toString();
                    fy = fy + ar1[jk] + " ";
@@ -755,10 +755,6 @@ public class Compiler {
 
            kk++;
        }
-   
-    
-     
-
             
         }
         });

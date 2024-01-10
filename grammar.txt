@@ -1,11 +1,11 @@
-ts={entities,relations,key,Identifier,one-one,one-many,zero-one,zero-many,Left Parenthesis,Right Parenthesis,;,:,comma};end;
+ts={entities relations key Identifier one-one one-many zero-one zero-many ( ) ; : ,};end;
 <ER>->entities.:.<Entities>.relations.:.<Relations>;end;
 <Entities>-><Entity>.<REntities>;end;
 <Entity>->Identifier.:.key.(.Identifier.).,.<Attributes>.;;end;
 <REntities>-><Entities>|~;end;
 <Attributes>->Identifier.<RAttributes>;end;
 <RAttributes>->,.<Attributes>|~;end;
-<Relations>-><Relation>|<RRelations>;end;
+<Relations>-><Relation>.<RRelations>;end;
 <RRelations>-><Relations>|~;end;
-<Relation>->Identifier.:.(.Identifier.;.Identifier.).<Cardinality>.<Cardinality>.;;end;
+<Relation>->Identifier.:.(.Identifier.,.Identifier.).<Cardinality>.<Cardinality>.;;end;
 <Cardinality>->one-one|one-many|zero-one|zero-many;end;

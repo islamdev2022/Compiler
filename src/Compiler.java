@@ -158,6 +158,7 @@ public class Compiler {
 
                         // Show the result frame
                         lexicalResultFrame.setVisible(true);
+                        lexicalResultFrame.setLocationRelativeTo(null);
 
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -259,7 +260,7 @@ public class Compiler {
                 } else {
                     switch ((us = new Syntactic()).setup(text)) {
                         case 1:
-                            JOptionPane.showMessageDialog(frame, "grammar correct", "success",
+                            JOptionPane.showMessageDialog(frame, "Grammar Correct", "success",
                                     JOptionPane.INFORMATION_MESSAGE);
                             FirstAndFollow.setEnabled(true);
 
@@ -334,31 +335,45 @@ public class Compiler {
        frame3.setSize(900, 400);
        frame3.setLocationRelativeTo(null);
 
-       JList<String> input = new JList<>();
-       JList<String> stack = new JList<>();
-       JList<String> action = new JList<>();
-       JList<String> rule = new JList<>();
-       JDialog accept = new JDialog();
-       JLabel inputL = new JLabel("Input");
-       JLabel stackL = new JLabel("Stack");
-       JLabel ruleL = new JLabel("Rule");
-       JLabel actionL = new JLabel("action");
-       accept.setTitle("Accepted");
-       accept.setLocationRelativeTo(null);
+       // Creating components
+        JList<String> input = new JList<>();
+        JList<String> stack = new JList<>();
+        JList<String> action = new JList<>();
+        JList<String> rule = new JList<>();
+        JDialog accept = new JDialog();
+        JLabel inputL = new JLabel("Input");
+        JLabel stackL = new JLabel("Stack");
+        JLabel ruleL = new JLabel("Rule");
+        JLabel actionL = new JLabel("Action");
+        accept.setTitle("Accepted");
+        accept.setLocationRelativeTo(null);
 
-       // Use GridLayout
-       frame3.setLayout(new GridLayout(2, 4)); // 2 rows, 4 columns
+        // Main panel with BorderLayout
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
-       // Add components to the frame
-       frame3.add(inputL);
-       frame3.add(stackL);
-       frame3.add(actionL);
-       frame3.add(ruleL);
-       frame3.add(new JScrollPane(input)); // Wrap JLists in JScrollPane for scrollability
-       frame3.add(new JScrollPane(stack));
-       frame3.add(new JScrollPane(action));
-       frame3.add(new JScrollPane(rule));
+        // Labels panel
+        JPanel labelsPanel = new JPanel(new GridLayout(1, 4)); // 1 row, 4 columns
+        labelsPanel.add(inputL);
+        labelsPanel.add(stackL);
+        labelsPanel.add(actionL);
+        labelsPanel.add(ruleL);
 
+        // Lists panel
+        JPanel listsPanel = new JPanel(new GridLayout(1, 4)); // 1 row, 4 columns
+        listsPanel.add(new JScrollPane(input)); // Wrap JLists in JScrollPane for scrollability
+        listsPanel.add(new JScrollPane(stack));
+        listsPanel.add(new JScrollPane(action));
+        listsPanel.add(new JScrollPane(rule));
+
+        // Add panels to main panel
+        mainPanel.add(labelsPanel, BorderLayout.NORTH);
+        mainPanel.add(listsPanel, BorderLayout.CENTER);
+
+        // Add main panel to the frame
+        frame3.add(mainPanel);
+
+        // Set frame size 
+        frame3.setExtendedState(JFrame.MAXIMIZED_BOTH);
        // Show the frame
        frame3.setVisible(true);
 
@@ -825,14 +840,14 @@ public class Compiler {
 
         // Assuming 'at' is your JTable
         JTable at = new JTable(model);
-
+        
         // Add the table to a JScrollPane
         JScrollPane jScrollPane = new JScrollPane(at);
 
         // Add the JScrollPane to the frame's content pane
         analysisFrame.getContentPane().add(jScrollPane);
         // Configure and display the analysis frame
-        analysisFrame.pack(); // Adjusts size to fit contents
+        analysisFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Adjusts size to fit contents
         analysisFrame.setLocationRelativeTo(null); // Center on screen
 
         analysisFrame.setVisible(true);

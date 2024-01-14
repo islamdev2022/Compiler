@@ -274,7 +274,7 @@ public class Syntactic {
         }
         return -1;
     }
-
+// this function is to check the existing of the instance (word) in the arraylist
     public static boolean checking(String[] Vn1, String str) {
         int i = 0;
         while (i < Vn1.length) {

@@ -340,13 +340,11 @@ public class Compiler {
         JList<String> stack = new JList<>();
         JList<String> action = new JList<>();
         JList<String> rule = new JList<>();
-        JDialog accept = new JDialog();
         JLabel inputL = new JLabel("Input");
         JLabel stackL = new JLabel("Stack");
         JLabel ruleL = new JLabel("Rule");
         JLabel actionL = new JLabel("Action");
-        accept.setTitle("Accepted");
-        accept.setLocationRelativeTo(null);
+       
 
         // Main panel with BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -386,19 +384,18 @@ public class Compiler {
        Stack<String> p3 = new Stack<String>();
        Stack<String> p5 = new Stack<String>();
 
-      
-       p1.push("#");
+       // *******************************************part 1***********************************************//
+
+       p1.push("#");//in stack # is always the first
        p2.push("#");
        String py = "";
 
        String ar1[] = new String[100];
        String ar2[] = new String[100];
 
-       String text = textArea.getText();
-
+        String text = textArea.getText();//to get text and lexemes 
         Lexical lexicalAnalyzer = new Lexical(text, true);
            ArrayList<Lexical> lexemes = new ArrayList<>();
-
            lexicalAnalyzer.processFile(lexemes);
 
        
@@ -409,13 +406,12 @@ public class Compiler {
         
 
        for (int jc = lexemes.size() - 1; jc >= 0; jc--) {
-           
-           p1.push(lexemes.get(jc).getValue());
+           p1.push(lexemes.get(jc).getValue()); //get value
        }
 
        int rrr = 0;
        String ar4[] = new String[50];
-       String[] LSstring = new String[us.LS.size()];
+       String[] LSstring = new String[us.LS.size()]; // split the left side alone
        
        if (rrr == 0)
            p2.push(us.LS.toArray(LSstring)[0]);
@@ -437,16 +433,15 @@ public class Compiler {
        }
 
        // Add an element to the model
-       modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us
-               .getIndex(terminalsS, p3.peek().toString())]);
-       mm1 = us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())][us.getIndex(terminalsS,
-               p3.peek().toString())];
+       modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())]
+            [us.getIndex(terminalsS, p3.peek().toString())]);
+       mm1 = us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())]
+            [us.getIndex(terminalsS,p3.peek().toString())];
        int jkk = 0;
        int jk = 0;
        String fy = "";
        while (!p5.empty()) {
            ar2[jkk] = p5.peek().toString();
-
            p5.pop();
            jkk++;
        }
@@ -498,8 +493,8 @@ public class Compiler {
 
        
 
-       modelAction.addElement("production");
-       modelInput.addElement(fy); // from stack to input
+       modelAction.addElement("Production");
+       modelInput.addElement(fy); 
        int ee = 0;
        int kk = 0;
 
@@ -578,7 +573,7 @@ public class Compiler {
                p3.addAll(p1);
            }
            System.out.println("p5.peek " + p5.peek());
-           System.out.println("pile abcdefjh ==" + p2.toString());
+           System.out.println("pile abcd ==" + p2.toString());
            System.out.println("pile ==" + p5.toString());
 
            jk = 0;
@@ -594,7 +589,7 @@ public class Compiler {
            if (p5.peek().equals(p3.peek()) || (!Syntactic.checking(us.LS.toArray(LSstring), o2)
                    && !Syntactic.checking(terminalsS, o2) && o1.equals("Identifier"))) {
 
-               System.out.println(" befor py +++" + py);
+               System.out.println(" before py +++" + py);
                ee = 1;
                for (int yu = 0; yu < ar2.length; yu++) {
                    if (ar2[yu] != "")
@@ -643,12 +638,11 @@ public class Compiler {
                }
 
                if (p1.empty() && p2.empty()) {
-                   System.out.println("p1.empty()&&p2.empty()");
                    modelStack.addElement("");
                    modelInput.addElement("");
                    modelRule.addElement("");
                    modelAction.addElement("");
-                   accept.setVisible(true);
+                   JOptionPane.showMessageDialog(frame3, "Accepted", "Action",JOptionPane.INFORMATION_MESSAGE);
                }
 
            }
@@ -676,21 +670,14 @@ public class Compiler {
                 
                     int index1 = us.getIndex(LSstring, p5.peek().toString());
                    int index2 = us.getIndex(terminalsS, o3);
-                   System.out.println("p5555555555555555555555555555"+p5.peek().toString());
-                   System.out.println("LSSSSSSSSSSSSSSSSSSSSSSSSTRING"+Arrays.toString(LSstring));
-                   System.out.println("index 1 ============================"+index1);
-                   
-                  
-              
-                   
+
                    mm1 = us.analysis_table[index1][index2];
                    modelRule.addElement(us.analysis_table[index1][index2]);
                    
                    
                    
                } else {
-                   System.out.println(us.LS.toArray(LSstring).length); 
-                       
+                  System.out.println(us.LS.toArray(LSstring).length); 
                   System.out.println(terminalsS.length); 
                        
                   int index1 = us.getIndex(LSstring, p5.peek().toString());
@@ -699,17 +686,8 @@ public class Compiler {
                   // Check if indices are valid
                   if (index1 != -1 && index2 != -1) {
                       mm1 = us.analysis_table[index1][index2];
-                  } else {
-                      if (index1 == -1) {
-                       System.out.println("index 1 ============================-1");
-                      }
-                      if (index2 == -1) {
-                       System.out.println("index 2 ============================-1");
-                       System.out.println(p3.peek().toString());
-                       System.out.println(Arrays.toString(terminalsS));
-                      }
-                      
-                  }
+                  } 
+
                   int i1 = us.getIndex(LSstring, p5.peek().toString());
                   int i2 = us.getIndex(terminalsS, p3.peek().toString());
                   
@@ -717,17 +695,7 @@ public class Compiler {
                   if (i1 != -1 && i2 != -1) {
                       mm1 = us.analysis_table[index1][index2];
                       modelRule.addElement(us.analysis_table[i1][i2]);
-                  } else {
-                      if (i1 == -1) {
-                       System.out.println("i 1 ============================-1");
-                      }
-                      if (i2 == -1) {
-                       System.out.println("i 2 ============================-1");
-                       System.out.println(p3.peek().toString());
-                       System.out.println(Arrays.toString(terminalsS));
-                      }
-                      
-                  }
+                  } 
                   System.out.println("THIS IS P3"+p3.peek().toString());
                  
                }
@@ -760,7 +728,7 @@ public class Compiler {
                    modelRule.addElement("ERROR");
                    break;
                }
-               modelAction.addElement("production");
+               modelAction.addElement("Production");
 
                for (int yu = 0; yu < ar2.length; yu++) {
                    ar2[yu] = "";
@@ -779,7 +747,7 @@ public class Compiler {
 
     }
 
-    public static String GET_TYPE_OF_ArrayList(ArrayList<Lexical> tripless, String str) {
+    public static String GET_TYPE_OF_ArrayList(ArrayList<Lexical> lexemes, String str) {
         for (int op = 0; op < lexemes.size(); op++) {
             if (str.equals(lexemes.get(op).getType())) {
                 return str;

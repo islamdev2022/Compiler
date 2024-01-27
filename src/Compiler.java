@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
+//All the imports 
 
 public class Compiler {
     static Syntactic us;
@@ -173,16 +174,16 @@ public class Compiler {
 
         firstFollowFrame.setSize(500, 350);
         firstFollowFrame.setLocationRelativeTo(null);
-        JList<String> nts = new JList<>();
+        JList<String> nts = new JList<>();//creating lists for each column 
         JList<String> first = new JList<>();
         JList<String> follow = new JList<>();
 
-        JScrollPane jScrollPaneNTS = new JScrollPane();
+        JScrollPane jScrollPaneNTS = new JScrollPane();//adding the scroll to the lists 
         JScrollPane jScrollPaneFIRST = new JScrollPane();
         JScrollPane jScrollPaneFOLLOW = new JScrollPane();
 
         nts.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };//initializing the None Terminals list
 
             public int getSize() {
                 return strings.length;
@@ -197,7 +198,7 @@ public class Compiler {
         firstFollowFrame.getContentPane().add(jScrollPaneNTS);
 
         follow.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };//initializing the Follows list
 
             public int getSize() {
                 return strings.length;
@@ -212,7 +213,7 @@ public class Compiler {
         firstFollowFrame.getContentPane().add(jScrollPaneFOLLOW);
 
         first.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };//initializing the Firsts list
 
             public int getSize() {
                 return strings.length;
@@ -261,12 +262,12 @@ public class Compiler {
                     switch ((us = new Syntactic()).setup(text)) {
                         case 1:
                             JOptionPane.showMessageDialog(frame, "Grammar Correct", "success",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.INFORMATION_MESSAGE);//Jpane to show that the grammar is correct
                             FirstAndFollow.setEnabled(true);
 
                             DefaultListModel<String> nts_model = new DefaultListModel<>();
                             for (String l : us.LS) {
-                                nts_model.addElement(l);
+                                nts_model.addElement(l); //adding elements to the None terminals list
                             }
                             DefaultListModel<String> first_model = new DefaultListModel<>();
                             for (ArrayList<String> l : us.first) {
@@ -274,7 +275,7 @@ public class Compiler {
                                 for (String s : l) {
                                     _tmp += s + " | ";
                                 }
-                                first_model.addElement(_tmp.substring(0, _tmp.length() - 3));
+                                first_model.addElement(_tmp.substring(0, _tmp.length() - 3));//adding elements to Firsts list
                             }
                             DefaultListModel<String> follow_model = new DefaultListModel<>();
                             for (ArrayList<String> l : us.follow) {
@@ -282,12 +283,12 @@ public class Compiler {
                                 for (String s : l) {
                                     _tmp += s + " | ";
                                 }
-                                follow_model.addElement(_tmp.substring(0, _tmp.length() - 3));
+                                follow_model.addElement(_tmp.substring(0, _tmp.length() - 3));//adding elements to the Follows list
                             }
 
                             FirstAndFollow.addActionListener(new ActionListener() {
                                 @Override
-                                public void actionPerformed(ActionEvent e) {
+                                public void actionPerformed(ActionEvent e) {//showing the first follow frame after clicking the button
                                     nts.setModel(nts_model);
                                     first.setModel(first_model);
                                     follow.setModel(follow_model);
@@ -298,6 +299,7 @@ public class Compiler {
                             submitButton2.setEnabled(true); // Enable the analyze button
 
                             break;
+                            // the other cases are for grammar errors , calculating the first and follow errors
                         case -1:
                             JOptionPane.showMessageDialog(firstFollowFrame, "Error Grammar incorrect", "File Error!!",
                                     JOptionPane.ERROR_MESSAGE);
@@ -319,7 +321,7 @@ public class Compiler {
         analyzeBtnTable.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setup_anaframe();
+                setup_anaframe();//analysis table frame (predictive table)
             }
         });
 

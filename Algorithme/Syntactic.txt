@@ -1,0 +1,110 @@
+Fonction setup(fileContent)
+    G ← readFile(fileContent)
+    Si G est null Alors
+        Retourner -1  // Erreur dans la grammaire
+    FinSi
+
+    Pour chaque production dans G Faire
+        Diviser la production en côtés gauche et droit
+        Ajouter aux LS et RS respectivement
+    FinPour
+
+    Initialiser les tableaux 'first' et 'follow'
+
+    Calculer les ensembles FIRST pour tous les non-terminaux
+    Si first est vide Alors
+        Retourner -2  // Erreur dans le calcul de FIRST
+    FinSi
+
+    Calculer les ensembles FOLLOW pour tous les non-terminaux
+    Si follow est vide Alors
+        Retourner -3  // Erreur dans le calcul de FOLLOW
+    FinSi
+
+    Construire la table d'analyse
+
+    Mettre isCalculated à vrai
+    Retourner 1  // Succès
+FinFonction
+
+
+
+
+onction FIRST(r, index, profondeur)
+    Si profondeur dépasse le max ou si r déjà traité Alors
+        Retourner faux
+    FinSi
+
+    Ajouter r à alreadyProcessed
+    Initialiser le drapeau de test epsilon
+
+    Trouver l'indice de r dans LS
+    Pour chaque production dans RS à l'indice trouvé Faire
+        Diviser la production en symboles
+        Traiter chaque symbole pour l'ensemble FIRST
+    FinPour
+
+    Retirer r de alreadyProcessed
+    Retourner le résultat du test epsilon
+FinFonction
+
+
+Fonction FOLLOW(r, index)
+    Si r est le symbole de départ Alors
+        Ajouter le symbole de fin à son ensemble FOLLOW
+    FinSi
+
+    Pour chaque production dans RS Faire
+        Si r est dans la production Alors
+            Calculer l'ensemble FOLLOW basé sur les règles de grammaire
+        FinSi
+    FinPour
+FinFonction
+
+
+Fonction AnalysisTable
+    Pour chaque production dans RS Faire
+        Initialiser un ensemble temporaire pour les symboles
+        Déterminer si epsilon est présent
+
+        Pour chaque symbole dans la production Faire
+            Mettre à jour tempSet basé sur les ensembles FIRST et FOLLOW
+        FinPour
+
+        Mettre à jour la table d'analyse avec tempSet et la production
+    FinPour
+FinFonction
+
+Fonction updateAnalysisTable(rowIndex, symboles, production)
+    Pour chaque symbole dans symboles Faire
+        Trouver son indice dans terminals
+        Mettre à jour analysis_table à rowIndex et columnIndex
+    FinPour
+FinFonction
+
+
+Fonction isNoneTerminal(s)
+    Vérifier si s est dans LS
+    Retourner vrai si trouvé, faux sinon
+FinFonction
+
+Fonction NTindex(s)
+    Trouver l'indice de s dans LS
+    Retourner l'indice ou -1 si non trouvé
+FinFonction
+
+Fonction readFile(fileContent)
+    Traiter fileContent pour extraire la grammaire
+    Diviser en terminaux et productions
+    Retourner la grammaire traitée ou null en cas d'erreur
+FinFonction
+
+Fonction getIndex(Vn1, str)
+    Trouver l'indice de str dans Vn1
+    Retourner l'indice ou -1 si non trouvé
+FinFonction
+
+Fonction checking(Vn1, str)
+    Vérifier si str existe dans Vn1
+    Retourner vrai si trouvé, faux sinon
+FinFonction

@@ -82,6 +82,7 @@ public class Compiler {
         submitButton2.setEnabled(false);
         buttonPanel2.add(submitButton2);
         panel2.add(buttonPanel2);
+        //end code of the frame window
 
         // Action listener for file chooser button
         fileChooserButton.addActionListener(new ActionListener() {

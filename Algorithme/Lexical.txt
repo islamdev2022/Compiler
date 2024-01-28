@@ -1,0 +1,73 @@
+Fonction LexicalT(nomFichier)
+    Initialiser contentBuilder en tant que StringBuilder
+    Ouvrir BufferedReader sur nomFichier
+    Tant qu'il y a une ligne à lire
+        Ajouter la ligne à contentBuilder avec un saut de ligne
+    FinTantQue
+    Définir fileContent sur le contenu de contentBuilder
+FinFonction
+
+
+Constructeur Lexical(type, valeur)
+    Définir this.type à type
+    Définir this.valeur à valeur
+FinConstructeur
+
+Constructeur Lexical(texte, estTexte)
+    Si estTexte est vrai
+        Définir Lexical.fileContent à texte
+    FinSi
+FinConstructeur
+
+Constructeur Lexical()
+    // Constructeur vide
+FinConstructeur
+
+
+Fonction getType()
+    Retourner type
+FinFonction
+
+Fonction getValue()
+    Retourner valeur
+FinFonction
+
+
+Fonction processFile(u)
+    Appeler getLexemes avec u et Lexical.fileContent
+FinFonction
+
+
+Fonction isLetter(c)
+    Retourner vrai si c est une lettre
+FinFonction
+
+Fonction isPunctuation(c)
+    Retourner vrai si c est une ponctuation (;, , ou :)
+FinFonction
+
+Fonction isLeftParenthesis(c)
+    Retourner vrai si c est une parenthèse gauche '('
+FinFonction
+
+Fonction isRightParenthesis(c)
+    Retourner vrai si c est une parenthèse droite ')'
+FinFonction
+
+
+Fonction getLexemes(u, s)
+    Initialiser les indices et les compteurs de ligne et de colonne
+    Tant que i est inférieur à la longueur de s
+        Traiter les caractères de s pour identifier les lexèmes
+        Ajouter les nouveaux lexèmes à u
+    FinTantQue
+FinFonction
+
+
+Fonction getFileInputStream()
+    Retourner fileInputStream
+FinFonction
+
+Fonction readNextChar()
+    Lire le prochain caractère de fileInputStream
+FinFonction

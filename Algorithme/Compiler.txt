@@ -1,0 +1,263 @@
+____________________________________________ARRAY TYPE________________________________________
+Fonction GET_TYPE_OF_ArrayList(lexemes, str)
+    Pour op de 0 à la taille de lexemes Faire
+        Si str est égal au type de lexemes.get(op) Alors
+            Retourner str
+        FinSi
+    FinPour
+    Retourner chaîne vide
+FinFonction
+
+__________________________________________ANALYSIS FRAME________________________________
+Fonction setup_anaframe
+    Si us.terminals, us.RS, us.LS ou us.analysis_table est null Alors
+        Afficher "terminals or something else is null"
+        Retourner
+    FinSi
+
+    Afficher us.terminals
+
+    Préparer les noms de colonnes pour le modèle de tableau
+    Initialiser result avec une taille de us.terminals.size() + 1
+    Définir result[0] à chaîne vide
+    Si us.terminals.size() est supérieur à 0 Alors
+        Copier us.terminals dans result
+        Afficher result
+    FinSi
+
+    Préparer les données pour le modèle de tableau
+    Initialiser anat avec les tailles correspondantes
+    Pour i de 0 à us.LS.size() Faire
+        Définir anat[i][0] à us.LS.get(i).toString()
+        Pour j de 0 à us.terminals.size() Faire
+            Si us.analysis_table[i][j] n'est pas null Alors
+                Définir anat[i][j + 1] à us.analysis_table[i][j]
+            Sinon
+                Définir anat[i][j + 1] à "-"
+            FinSi
+        FinPour
+    FinPour
+
+    Afficher us.analysis_table pour le débogage
+
+    Créer et définir le modèle de tableau
+    Créer un modèle de tableau avec anat et columnNames
+
+    Afficher le contenu du modèle de tableau pour le débogage
+
+    Créer un cadre pour le tableau d'analyse
+    Créer un JTable avec le modèle
+    Ajouter le JTable à un JScrollPane
+    Ajouter le JScrollPane au cadre
+
+    Configurer et afficher le cadre d'analyse
+FinFonction
+
+___________________________________FONCTION POUR FILECHOOSER____________________________________
+
+Procédure fileChooser
+    Lorsque actionPerformed est déclenché par un événement e
+        Créer un nouveau JFileChooser
+        Afficher le dialogue de sélection de fichier et obtenir le résultat dans 'result'
+
+        Si 'result' est égal à JFileChooser.APPROVE_OPTION Alors
+            Sélectionner le fichier choisi dans le fileChooser
+            Essayer de
+                Lire le contenu du fichier sélectionné
+                Convertir le contenu en chaîne de caractères
+                Définir le texte de textArea2 avec le contenu du fichier
+            Attraper IOException
+                Afficher la trace de la pile d'exception
+            FinEssayer
+        FinSi
+    FinLorsque
+FinProcédure
+
+
+____________________________________BUTTON LEXICAL ANALYSES__________________________________
+
+Procédure button lexical analyses
+    Lorsque actionPerformed est déclenché par un événement e
+        Obtenir le texte de textArea
+
+        Si le texte est vide Alors
+            Afficher un message d'erreur: "Veuillez entrer du texte ou choisir un fichier pour l'analyse."
+        Sinon
+            Essayer de
+                Créer un nouvel analyseur lexical avec le texte
+                Initialiser une liste de lexèmes
+
+                Traiter le fichier/texte avec l'analyseur lexical
+
+                Créer un nouveau cadre pour afficher les résultats de l'analyse lexicale
+                Configurer la taille du cadre
+
+                Créer une zone de texte pour les résultats
+                Rendre la zone de texte non modifiable
+
+                Ajouter un panneau de défilement à la zone de texte
+                Ajouter le panneau de défilement au cadre
+
+                Ajouter les résultats à la zone de texte
+                Pour chaque lexème dans lexèmes Faire
+                    Ajouter la valeur, le type, la ligne et la colonne du lexème à la zone de texte
+                FinPour
+
+                Afficher le cadre des résultats
+                Positionner le cadre au centre
+            Attraper Exception
+                Afficher la trace de la pile d'exception
+            FinEssayer
+        FinSi
+    FinLorsque
+FinProcédure
+
+____________________________TEST GRAMMAR______________________________________
+Procédure testGrammarAction
+    Lorsque actionPerformed est déclenché par un événement e
+        Obtenir le texte de textArea2
+
+        Si le texte est vide Alors
+            Afficher un message d'erreur: "Veuillez entrer une grammaire pour l'analyse syntaxique."
+        Sinon
+            Créer une nouvelle instance de Syntactic et configurer avec le texte
+            Selon le résultat de la configuration
+                Cas 1:
+                    Afficher un message: "Grammaire Correcte"
+                    Activer le bouton FirstAndFollow
+
+                    Créer et remplir les modèles de listes pour les non-terminaux, FIRST et FOLLOW
+                    Ajouter un ActionListener à FirstAndFollow pour afficher les résultats
+                    Activer le bouton submitButton2
+
+                Cas -1:
+                    Afficher un message d'erreur pour grammaire incorrecte
+
+                Cas -2:
+                    Afficher un message d'erreur pour l'échec de calcul de FIRST
+
+                Cas -3:
+                    Afficher un message d'erreur pour l'échec de calcul de FOLLOW
+            FinSelon
+        FinSi
+    FinLorsque
+FinProcédure
+ 
+___________________________END______________________________________
+
+_________________________________________MAIN_______________________________________
+
+Initialiser quatre piles p1, p2, p3 et p5
+
+// Partie 1
+Ajouter "#" dans p1 et p2 (le symbole de départ)
+Déclarer les chaînes py, mm1 et les tableaux ar1, ar2, ar4
+Obtenir le texte de textArea
+Créer un analyseur lexical avec le texte et traiter pour obtenir les lexèmes
+
+Initialiser les éléments de ar2 à chaîne vide
+Empiler les valeurs des lexèmes dans p1, en commençant par la fin
+Initialiser rrr à 0
+Convertir la liste des non-terminaux (us.LS) en tableau LSstring
+Si rrr est 0, empiler le premier élément de LSstring dans p2
+Copier les éléments de p2 dans p5 et ceux de p1 dans p3
+Convertir la liste des terminaux (us.terminals) en tableau terminalsS
+Afficher terminalsS
+
+Initialiser les modèles DefaultListModel pour les règles, l'entrée et la pile
+Ajouter un élément au modèle de règle basé sur la table d'analyse
+Initialiser mm1 avec une valeur de la table d'analyse
+Initialiser les compteurs jkk et jk à 0
+Initialiser les chaînes fy et py
+
+Tant que p5 n'est pas vide
+    Ajouter les éléments de p5 dans ar2 et py, puis dépiler p5
+FinTantQue
+
+Tant que p3 n'est pas vide
+    Ajouter les éléments de p3 dans ar1 et fy, puis dépiler p3
+FinTantQue
+
+Ajouter fy dans le modèle d'entrée (modelInput)
+Ajouter py dans le modèle de pile (modelStack)
+Ajouter "Production" dans le modèle d'action (modelAction)
+
+
+// Partie 2 
+
+Initialiser les compteurs et les variables :
+    ee ← 0
+    kk ← 0
+    o3, o1, o2 ← chaîne vide
+    flag ← 0
+
+Tant que la pile p1 n'est pas vide Faire
+    Mettre flag à 0
+
+    Si le sommet de p1 et p2 sont des terminaux et différents, et le sommet de p1 n'est pas un identifiant
+        Afficher un message d'erreur syntaxique
+        Ajouter "ERROR" aux modèles d'action et de règle
+        Sortir de la boucle
+
+    Si le sommet de p1 est un identifiant et le sommet de p2 n'est pas "Identifier"
+        Afficher un message d'erreur syntaxique
+        Ajouter "ERROR" aux modèles d'action et de règle
+        Sortir de la boucle
+
+    Si le sommet de l'une des piles est "#" et l'autre non
+        Si les deux sommets sont des terminaux
+            Afficher un message d'erreur syntaxique
+            Ajouter "ERROR" aux modèles d'action et de règle
+            Sortir de la boucle
+
+    Si ee est 0 Alors
+        Trouver l'index de "->" dans mm1 et ajuster mm1
+        Si mm1 est "~", le mettre à chaîne vide
+        Diviser mm1 en symboles et les empiler dans p2
+        Copier les éléments de p2 dans p5 et ceux de p1 dans p3
+    FinSi
+
+    Afficher les éléments actuels des piles pour le débogage
+
+    Remettre jk et jkk à 0
+    Mettre py et fy à chaîne vide
+FinTantQue
+
+// Cas de non-correspondance
+Sinon Si o1 et o2 ne correspondent pas Alors
+    Mettre ee à 0
+    Si le sommet de p2 n'est pas un terminal Alors
+        Parcourir tous les lexèmes
+        Pour chaque lexème op Faire
+            Si la valeur du lexème op est égale au sommet de p3 et le type est "Identifier" Alors
+                Mettre o3 au type de lexème op
+                Mettre flag à 1
+                Sortir de la boucle
+            FinSi
+        FinPour
+    FinSi
+
+    Si flag est égal à 1 Alors
+        Trouver l'indice de l'élément en haut de p5 dans LSstring
+        Trouver l'indice de o3 dans terminalsS
+        Mettre mm1 à la valeur de la table d'analyse aux indices trouvés
+        Ajouter cette valeur au modèle de règle
+    Sinon
+        Trouver les indices de l'élément en haut de p5 dans LSstring et de l'élément en haut de p3 dans terminalsS
+        Si les indices sont valides Alors
+            Mettre mm1 à la valeur de la table d'analyse aux indices trouvés
+            Ajouter cette valeur au modèle de règle
+        FinSi
+    FinSi
+
+    Vider la pile p5 dans ar2 et mettre à jour py
+    Vider la pile p3 dans ar1 et mettre à jour fy
+    Ajouter py et fy aux modèles appropriés
+    Si mm1 est vide ou null Alors
+        Afficher un message d'erreur
+        Ajouter "ERROR" aux modèles d'action et de règle
+        Sortir de la boucle
+    FinSi
+    Ajouter "Production" au modèle d'action
+    Réinitialiser les éléments de ar2
+FinSi

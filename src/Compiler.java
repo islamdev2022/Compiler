@@ -425,6 +425,8 @@ public class Compiler {
        p3.addAll(p1);
        String[] terminalsS = us.terminals.toArray(new String[0]) ;// to convert the arrayList to a string[]
        System.out.println(Arrays.toString(terminalsS));
+
+    //    ________________________THOSE ARE FOR THE LIST_________________________________
        DefaultListModel<String> modelRule;
        // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
        // create a new one.
@@ -434,7 +436,34 @@ public class Compiler {
            modelRule = new DefaultListModel<>();
            rule.setModel(modelRule);
        }
+       DefaultListModel<String> modelInput;
+       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
+       // create a new one.
+       if (input.getModel() instanceof DefaultListModel) {
+           modelInput = (DefaultListModel<String>) input.getModel();
+       } else {
+           modelInput = new DefaultListModel<>();
+           input.setModel(modelInput);
+       }
+       
+       DefaultListModel<String> modelStack;
+       if (stack.getModel() instanceof DefaultListModel) {
+           modelStack = (DefaultListModel<String>) stack.getModel();
+       } else {
+           modelStack = new DefaultListModel<>();
+           stack.setModel(modelStack);
+       }
+       DefaultListModel<String> modelAction;
 
+       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
+       // create a new one.
+       if (action.getModel() instanceof DefaultListModel) {
+           modelAction = (DefaultListModel<String>) action.getModel();
+       } else {
+           modelAction = new DefaultListModel<>();
+           action.setModel(modelAction);
+       }
+// ______________________________END_______________________________________________
        // Add an element to the model
        modelRule.addElement(us.analysis_table[us.getIndex(us.LS.toArray(LSstring), p5.peek().toString())]
             [us.getIndex(terminalsS, p3.peek().toString())]);
@@ -455,24 +484,7 @@ public class Compiler {
            lss--;
        }
 
-       DefaultListModel<String> modelInput;
-
-       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
-       // create a new one.
-       if (input.getModel() instanceof DefaultListModel) {
-           modelInput = (DefaultListModel<String>) input.getModel();
-       } else {
-           modelInput = new DefaultListModel<>();
-           input.setModel(modelInput);
-       }
        
-       DefaultListModel<String> modelStack;
-       if (stack.getModel() instanceof DefaultListModel) {
-           modelStack = (DefaultListModel<String>) stack.getModel();
-       } else {
-           modelStack = new DefaultListModel<>();
-           stack.setModel(modelStack);
-       }
 
        // Add an element to the model
        modelStack.addElement(py.toString()); //from input to stack 
@@ -483,26 +495,17 @@ public class Compiler {
            jk++;
        }
 
-       DefaultListModel<String> modelAction;
-
-       // Check if the model of 'rule' is a DefaultListModel and get it. Otherwise,
-       // create a new one.
-       if (action.getModel() instanceof DefaultListModel) {
-           modelAction = (DefaultListModel<String>) action.getModel();
-       } else {
-           modelAction = new DefaultListModel<>();
-           action.setModel(modelAction);
-       }
+       
 
        
 
        modelAction.addElement("Production");
        modelInput.addElement(fy); 
-       int ee = 0;
-       int kk = 0;
+       
 
        // *******************************************part 2***********************************************//
-
+       int ee = 0;
+       int kk = 0;
        String o3 = "";
        String o1 = "";
        String o2 = "";
@@ -562,7 +565,6 @@ public class Compiler {
                System.out.println("p2.peek   " + p2.peek());
                while (lss1 >= 0) {
                    if (ar4[lss1] != "") {
-
                        p2.push(ar4[lss1]);
 
                    }
@@ -600,9 +602,7 @@ public class Compiler {
                }
 
                while (!p5.empty()) {
-
                    ar2[jkk] = p5.peek().toString();
-
                    p5.pop();
                    jkk++;
                }
@@ -667,18 +667,13 @@ public class Compiler {
                        }
                    }
                    System.out.println("O3 = " + o3);
-
                }
                if (flag == 1) { 
-                
-                    int index1 = us.getIndex(LSstring, p5.peek().toString());
-                   int index2 = us.getIndex(terminalsS, o3);
+                int index1 = us.getIndex(LSstring, p5.peek().toString());
+                int index2 = us.getIndex(terminalsS, o3);
 
-                   mm1 = us.analysis_table[index1][index2];
-                   modelRule.addElement(us.analysis_table[index1][index2]);
-                   
-                   
-                   
+                mm1 = us.analysis_table[index1][index2];
+                modelRule.addElement(us.analysis_table[index1][index2]);                 
                } else {
                   System.out.println(us.LS.toArray(LSstring).length); 
                   System.out.println(terminalsS.length); 
@@ -690,7 +685,6 @@ public class Compiler {
                   if (index1 != -1 && index2 != -1) {
                       mm1 = us.analysis_table[index1][index2];
                   } 
-
                   int i1 = us.getIndex(LSstring, p5.peek().toString());
                   int i2 = us.getIndex(terminalsS, p3.peek().toString());
                   
@@ -700,7 +694,6 @@ public class Compiler {
                       modelRule.addElement(us.analysis_table[i1][i2]);
                   } 
                   System.out.println("THIS IS P3"+p3.peek().toString());
-                 
                }
 
                while (!p5.empty()) {

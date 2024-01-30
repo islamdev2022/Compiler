@@ -644,8 +644,8 @@ public class Compiler {
                    modelStack.addElement("");
                    modelInput.addElement("");
                    modelRule.addElement("");
-                   modelAction.addElement("");
-                   JOptionPane.showMessageDialog(frame3, "Accepted", "Action",JOptionPane.INFORMATION_MESSAGE);
+                   modelAction.addElement("Accept");
+                   JOptionPane.showMessageDialog(frame3, "Input Accepted", "Action",JOptionPane.INFORMATION_MESSAGE);
                }
 
            }

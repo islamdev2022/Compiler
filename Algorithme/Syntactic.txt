@@ -30,7 +30,7 @@ FinFonction
 
 
 
-onction FIRST(r, index, profondeur)
+Fonction FIRST(r, index, profondeur)
     Si profondeur dépasse le max ou si r déjà traité Alors
         Retourner faux
     FinSi

@@ -1,0 +1,7 @@
+entities:
+Class: key(id_class);
+Student: key(id_student),first_name,;
+Course: key(id_course),designation;
+relations:
+include: (Class, Student)one-one one-many ;
+follow: (Student,Course) one-many one-many ;
